@@ -56,7 +56,8 @@ import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 public class FaceRecognizer {
 	
-	final String DATA_PATH = "C:/Users/Mauro/Desktop/data";
+//	final String DATA_PATH = "C:/Users/Mauro/Desktop/data";
+	final String DATA_PATH = "C:/Users/smoral/Documents/PFI/data";
 	IplImage[] trainingFaceImgArr;
 	private int nTrainFaces = 0;
 	CvMat projectedTrainFaceMat;
