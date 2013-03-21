@@ -11,7 +11,7 @@ environments {
 			driverClassName = "org.postgresql.Driver"
 			username = "postgres"
 			password = "postgres"
-			dbCreate = "create" // one of 'create', 'create-drop', 'update', 'validate', ''
+			dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
 			url = "jdbc:postgresql://localhost:5432/pfi"
 			configClass = GrailsAnnotationConfiguration.class
 		}

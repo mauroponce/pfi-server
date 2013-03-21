@@ -55,14 +55,13 @@ class AttendanceService {
     	int dayOfWeek = dateTime.dayOfWeek().get();
     	System.out.println("Day of Week: " + dayOfWeek);
 		
-    	/*String q = "from Course as c inner join c.teachers t where t.username = :username " +
-    			"and c.dayOfWeek = :dayOfWeek";*/
-		
-		// FIX!!!		
-		String q = "from Course as c where c.dayOfWeek = :dayOfWeek";
+    	String q = "select c from Course c join c.teachers t where t.username = :username " +
+    			"and c.dayOfWeek = :dayOfWeek";
+			
+		//String q = "from Course as c where c.dayOfWeek = :dayOfWeek";
     	
-		def courses = Course.findAll(q, [dayOfWeek: dayOfWeek])
-		// def courses = Course.findAll(q, [username: teacherUsername, dayOfWeek: dayOfWeek])     	
+//		def courses = Course.findAll(q, [dayOfWeek: dayOfWeek])
+		def courses = Course.executeQuery(q, [username: teacherUsername, dayOfWeek: dayOfWeek])     	
     	LocalTime currentTime = new LocalTime(dateTime.getHourOfDay(), dateTime.getMinuteOfHour())    	
     	for(Course c in courses){
     		if(isInInterval(currentTime, c.getHourFrom(), c.getHourTo())){
