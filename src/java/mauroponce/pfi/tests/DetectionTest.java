@@ -7,7 +7,7 @@ import mauroponce.pfi.recognition.FaceDetection;
  */
 public class DetectionTest {
 	public static void main(String arg[]) throws Exception {
-		String fileInputPath = "C:\\Users\\smoral\\Pictures\\Fotos\\All Boys de La Pampa (2000).jpg";
+		String fileInputPath = "C:\\Users\\smoral\\Pictures\\Fotos\\Dsc00664.jpg";
 		FaceDetection.detectFaces(fileInputPath, "haarcascade_frontalface_alt.xml"); 
 		FaceDetection.detectFaces(fileInputPath, "haarcascade_frontalface_alt2.xml");
 //		FaceDetection.detectFaces(fileInputPath, "haarcascade_frontalface_alt_tree.xml");

@@ -1,20 +1,17 @@
 package mauroponce.pfi.recognition;
 
-import static com.googlecode.javacv.cpp.opencv_core.CV_AA;
 import static com.googlecode.javacv.cpp.opencv_core.IPL_DEPTH_8U;
 import static com.googlecode.javacv.cpp.opencv_core.cvGetSeqElem;
 import static com.googlecode.javacv.cpp.opencv_core.cvLoad;
-import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
-import static com.googlecode.javacv.cpp.opencv_core.cvRectangle;
 import static com.googlecode.javacv.cpp.opencv_highgui.cvLoadImage;
 import static com.googlecode.javacv.cpp.opencv_highgui.cvSaveImage;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_BGR2GRAY;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvCvtColor;
 import static com.googlecode.javacv.cpp.opencv_objdetect.cvHaarDetectObjects;
+import mauroponce.pfi.utils.ImageUtils;
 
 import com.googlecode.javacv.cpp.opencv_core.CvMemStorage;
 import com.googlecode.javacv.cpp.opencv_core.CvRect;
-import com.googlecode.javacv.cpp.opencv_core.CvScalar;
 import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.googlecode.javacv.cpp.opencv_objdetect.CvHaarClassifierCascade;
@@ -57,14 +54,21 @@ public class FaceDetection {
 		// around them.
 		for (int i = 0; i < faces.total(); i++) {
 			CvRect r = new CvRect(cvGetSeqElem(faces, i));
-			cvRectangle(originalImage, cvPoint(r.x(), r.y()),
-					cvPoint(r.x() + r.width(), r.y() + r.height()),
-					CvScalar.YELLOW, 1, CV_AA, 0);
-
+			IplImage imageCropped = ImageUtils.cropImage(originalImage, r);
+			
+//			cvRectangle(originalImage, cvPoint(r.x(), r.y()),
+//					cvPoint(r.x() + r.width(), r.y() + r.height()),
+//					CvScalar.YELLOW, 1, CV_AA, 0);
+			
+			// Save cropped image to a new file.
+			cvSaveImage("C:\\Users\\smoral\\Desktop\\tmp\\cropped\\"+fileOutputName+i+".jpg", imageCropped);
+			IplImage imageResized = ImageUtils.resizeImage(originalImage,103,106); 
+			// Save resized image to a new file.
+			cvSaveImage("C:\\Users\\smoral\\Desktop\\tmp\\resized\\"+fileOutputName+i+".jpg", imageResized);
 		}
-
-		// Save the image to a new file.
-		cvSaveImage("C:\\Users\\smoral\\Desktop\\tmp\\"+fileOutputName+".jpg", originalImage);
+//
+//		// Save the image to a new file.
+//		cvSaveImage("C:\\Users\\smoral\\Desktop\\tmp\\"+fileOutputName+".jpg", originalImage);
 		System.out.println("Printe image "+fileOutputName);
 	}
 
