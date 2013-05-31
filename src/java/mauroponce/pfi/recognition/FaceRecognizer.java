@@ -32,6 +32,7 @@ import static com.googlecode.javacv.cpp.opencv_highgui.cvSaveImage;
 import static com.googlecode.javacv.cpp.opencv_legacy.CV_EIGOBJ_NO_CALLBACK;
 import static com.googlecode.javacv.cpp.opencv_legacy.cvCalcEigenObjects;
 import static com.googlecode.javacv.cpp.opencv_legacy.cvEigenDecomposite;
+import static com.googlecode.javacv.cpp.opencv_imgproc.cvEqualizeHist;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -173,6 +174,9 @@ public class FaceRecognizer {
 								+ height + ", but found " + faceImage.width()
 								+ "x" + faceImage.height());
 					}
+					// Give the image a standard brightness and contrast.
+					cvEqualizeHist(faceImage, faceImage);
+					
 					faceImgArr[iFace] = faceImage;
 					iFace++;
 				}
@@ -476,6 +480,11 @@ public class FaceRecognizer {
 					+ "\nwanted " + width + "x" + height + ", but found "
 					+ faceImage.width() + "x" + faceImage.height());
 		}
+		
+		// Give the image a standard brightness and contrast.
+		cvEqualizeHist(faceImage, faceImage);
+		
+		
 		faceImgArr[iFace] = faceImage;
 		iFace++;		
 		return faceImgArr;
