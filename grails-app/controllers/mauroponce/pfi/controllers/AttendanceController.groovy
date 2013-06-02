@@ -20,6 +20,11 @@ class AttendanceController {
 	
 	// http://localhost:8080/PFI/attendance/facesdata?usr=mmiralles&d=2012-10-15-09:30
 	def facesdata() {
+		/*Student s
+		Student.withTransaction {
+			s = Student.get(131445)
+		}
+		println(s.getEncodedImage())*/
 		println(params)
 		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH:mm");
 		// DateTime date1 = formatter.parseDateTime("2012-10-15 09:30");
