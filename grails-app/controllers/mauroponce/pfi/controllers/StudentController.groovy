@@ -9,11 +9,19 @@ class StudentController {
 		data: 'GET'
 	]
 	
-	// http://localhost:8080/PFI/student/data?lu=131445
-    def data() { 
-		Integer lu = params.lu.toInteger()
-		// obtener Student por pk LU
-		def student = Student.completar
-		render student as JSON
+	// http://localhost:8080/PFI/student/data/131445
+	def data() {
+		Student student
+		Student.withTransaction {
+			student = Student.get(params.id.toInteger())
+		}
+		def jsonData = [
+			lu: student.getLU(),
+			firstName: student.getFirstName(),
+			lastName: student.getLastName(),
+			encodedImage: student.getEncodedImage()
+		]
+		
+		render jsonData as JSON
 	}
 }
