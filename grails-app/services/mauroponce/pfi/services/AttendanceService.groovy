@@ -28,7 +28,7 @@ class AttendanceService {
 		def student = Student.get(studentLU);
 		def course = Course.get(courseNumber);
 		def attendance = new Attendance(student, course, attended, d);
-		attendance.save();
+		return attendance.save();
 	}
 	
 	String getTrainingData(final String username, final Date currentDate) {
