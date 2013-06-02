@@ -12,7 +12,7 @@ import javax.persistence.Table;
 public class Teacher implements Serializable{
 	
 	private String username;
-	private String password;
+	//private String password;
 	
 	@Id
 	public String getUsername() {
@@ -21,11 +21,11 @@ public class Teacher implements Serializable{
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public String getPassword() {
+/*	public String getPassword() {
 		return password;
 	}
 	public void setPassword(String password) {
 		this.password = password;
-	}
+	}*/
 	public Teacher() {}
 }
