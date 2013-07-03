@@ -15,7 +15,7 @@ class AttendanceController {
 	
 	static allowedMethods = [
 		save: 'POST',
-		facesdata: 'GET'		
+		facesdata: 'GET'
 	]
 	
 	// http://localhost:8080/PFI/attendance/facesdata?usr=mmiralles&d=2012-10-15-09:30
