@@ -44,6 +44,7 @@ import java.util.TreeSet;
 import mauroponce.pfi.domain.IndexDistance;
 import mauroponce.pfi.utils.AppConstants;
 import mauroponce.pfi.utils.FileUtils;
+import mauroponce.pfi.utils.ImageUtils;
 
 import com.googlecode.javacpp.FloatPointer;
 import com.googlecode.javacpp.Pointer;
@@ -71,8 +72,8 @@ public class FaceRecognizer {
 	CvMat personNumTruthMat;
 	IplImage[] testFaceImgArr;
 
-	public void learn(final String [] imagesFoldersArray) {
-		trainingFaceImgArr = loadFaceImgArrayFromImagesFolders(imagesFoldersArray);
+	public void learn(final String courseFolder) {
+		trainingFaceImgArr = loadFaceImgArrayFromImagesFolders(courseFolder);
 		nTrainFaces = trainingFaceImgArr.length;
 		if (nTrainFaces < 3) {//Se necesitan al menos 3 imagenes de entrenamiento
 			return;
@@ -105,7 +106,7 @@ public class FaceRecognizer {
 	}	
 	
 	private IplImage[] loadFaceImgArrayFromImagesFolders(
-			final String [] imagesFoldersArray) {
+			final String courseFolder) {
 		
 		IplImage[] faceImgArr;
 		
@@ -116,12 +117,18 @@ public class FaceRecognizer {
 
 		nPersons = 0;
 		
+		List<File> imageFolderFiles = new ArrayList<File>();
 		
-		for(String folder : imagesFoldersArray){
-			File archivo = new File(AppConstants.TRAINING_IMAGES_ROOT_FOLDER + "/" + folder);
-			if(archivo.isDirectory()){
-				nFaces += archivo.listFiles().length;
-			}
+		File courseFolderFile = new File(AppConstants.TRAINING_IMAGES_ROOT_FOLDER + "/" + courseFolder);
+
+		if(courseFolderFile.isDirectory()){
+			for (String imageFolderName : courseFolderFile.list()) {
+				File imageFolderFile = new File(AppConstants.TRAINING_IMAGES_ROOT_FOLDER + "/" + courseFolder + "/" + imageFolderName);
+				if(imageFolderFile.isDirectory()){
+					nFaces += imageFolderFile.listFiles().length;
+				}
+				imageFolderFiles.add(imageFolderFile);
+			} 
 		}
 		
 		
@@ -146,19 +153,18 @@ public class FaceRecognizer {
 
 		personNames.clear(); // Make sure it starts as empty.
 
-		for(String imageFolderName : imagesFoldersArray){
-			File imageDirectory = new File(AppConstants.TRAINING_IMAGES_ROOT_FOLDER + "/" + imageFolderName);
+		for(File imageFolderFile : imageFolderFiles){
 			int personNumber = 0;
-			if(imageDirectory.isDirectory()){
+			if(imageFolderFile.isDirectory()){
 				nPersons++;
-				String personName = imageFolderName;
+				String personName = imageFolderFile.getName();
 				personNumber = Integer.valueOf(personName);
 				personNames.add(personName);
 				
-				for (final File imgFile : imageDirectory.listFiles()) {
+				for (final File imgFile : imageFolderFile.listFiles()) {
 					String imgFilename = imgFile.getAbsolutePath();
 					personNumTruthMat.put(0, iFace, personNumber);
-					final IplImage faceImage 
+					IplImage faceImage 
 						= cvLoadImage(imgFilename, CV_LOAD_IMAGE_GRAYSCALE);
 					if (faceImage == null) {
 						throw new RuntimeException("No se puede leer la imagen "
@@ -169,10 +175,11 @@ public class FaceRecognizer {
 						height = faceImage.height();
 					} else if (faceImage.width() != width
 							|| faceImage.height() != height) {
-						throw new RuntimeException("wrong size face in "
-								+ imgFilename + "\nwanted " + width + "x"
-								+ height + ", but found " + faceImage.width()
-								+ "x" + faceImage.height());
+						faceImage = ImageUtils.resizeImage(faceImage, 103, 106);
+//						throw new RuntimeException("wrong size face in "
+//								+ imgFilename + "\nwanted " + width + "x"
+//								+ height + ", but found " + faceImage.width()
+//								+ "x" + faceImage.height());
 					}
 					// Give the image a standard brightness and contrast.
 					cvEqualizeHist(faceImage, faceImage);
@@ -311,8 +318,8 @@ public class FaceRecognizer {
 		cvReleaseFileStorage(fileStorage);
 	}
 	
-	public String getFacesData(final String [] imagesFoldersArray){
-		learn(imagesFoldersArray);
+	public String getFacesData(final String courseFolder){
+		learn(courseFolder);
 		return FileUtils.fileToString(DATA_PATH + "/facedata.xml");
 	}
 	
