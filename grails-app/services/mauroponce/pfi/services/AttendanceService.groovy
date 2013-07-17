@@ -46,7 +46,7 @@ class AttendanceService {
 		}
 		FaceRecognizer recognitionService = new FaceRecognizer();
 		System.out.println("Students: " + course.getStudents().size());
-		return recognitionService.getFacesData(luArray);
+		return recognitionService.getFacesData("course_"+course.getCourseNumber());
 	}
 	
 	Course findCourse(final String teacherUsername, final Date date){

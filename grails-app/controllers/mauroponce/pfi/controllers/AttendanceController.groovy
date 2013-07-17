@@ -27,7 +27,7 @@ class AttendanceController {
 		Date currentDate = formatter.parseDateTime(params.d).toDate();
 		String facesData = attendanceService.getTrainingData(username, currentDate) 
 		def result = [facesdata: facesData] 
-		render result as JSON
+		render facesData
 	}
 	
 	// http://localhost:8080/PFI/attendance/save

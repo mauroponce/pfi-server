@@ -18,7 +18,7 @@ class StudentController {
 	}
 	// http://localhost:8080/PFI/student/batch_data/131445_131900_131455
 	def batch_data(){
-		String lus = "131445_131900_131455"
+		String lus = params.id.toString()
 		def students_data = []
 		lus.split("_").each { k ->
 			def student_data = student_data(k)
