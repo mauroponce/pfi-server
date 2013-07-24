@@ -71,6 +71,7 @@ public class FaceRecognizer {
 	final List<String> personNames = new ArrayList<String>();
 	CvMat personNumTruthMat;
 	IplImage[] testFaceImgArr;
+	CvMat trainPersonNumMat;
 
 	public void learn(final String courseFolder) {
 		trainingFaceImgArr = loadFaceImgArrayFromImagesFolders(courseFolder);
@@ -347,24 +348,26 @@ public class FaceRecognizer {
 			cvReleaseImage(bigImg);
 		}
 	}
-
-	public void recognize(final String testImagePath, int n) {
+	
+	/**Finds the k most similar faces.*/
+	public ArrayList<Integer> recognize(final String testImagePath, final int k) {
 		int i = 0;
 		int nTestFaces = 0;
-		CvMat trainPersonNumMat;
 		float[] projectedTestFace;
 		float confidence = 0.0f;
-
+		ArrayList<Integer> nearestsLus = null;
+		
+		
+		
 		testFaceImgArr = loadFaceImgArrayFromImagePath(testImagePath);
 		nTestFaces = testFaceImgArr.length;
 		trainPersonNumMat = loadTrainingData();
 		if (trainPersonNumMat == null) {
-			return;
+			return nearestsLus;
 		}
 		projectedTestFace = new float[nEigens];
 
 		for (i = 0; i < nTestFaces; i++) {
-			int iNearest;
 			int nearest;
 
 			cvEigenDecomposite(testFaceImgArr[i], // obj
@@ -376,14 +379,19 @@ public class FaceRecognizer {
 					projectedTestFace); // coeffs
 
 			final FloatPointer pConfidence = new FloatPointer(confidence);
-			iNearest = getKNN(projectedTestFace, new FloatPointer(
-					pConfidence), n)[0];
+			int [] knn = getKNN(projectedTestFace, new FloatPointer(
+					pConfidence), k);
 			
 			confidence = pConfidence.get();
-			nearest = trainPersonNumMat.data_i().get(iNearest);
-
-			System.out.println("Nearest: " + nearest);
+			nearest = knn[0];
+			nearestsLus = new ArrayList<Integer>();
+			for(int j = 0 ; j < knn.length; j++){
+				nearestsLus.add(knn[j]);
+			}
+			System.out.println("Mas cercano: " + nearest);
 		}
+		
+		return nearestsLus; 
 	}
 
 	private CvMat loadTrainingData() {
@@ -452,7 +460,7 @@ public class FaceRecognizer {
 		
 		return pTrainPersonNumMat;
 	}
-
+	
 	private IplImage[] loadFaceImgArrayFromImagePath(final String imagePath) {
 		IplImage[] faceImgArr;
 		int iFace = 0;
@@ -491,11 +499,11 @@ public class FaceRecognizer {
 		// Give the image a standard brightness and contrast.
 		cvEqualizeHist(faceImage, faceImage);
 		
-		
 		faceImgArr[iFace] = faceImage;
 		iFace++;		
 		return faceImgArr;
 	}
+
 	/**Get the K nearest neighbors.*/
 	private int [] getKNN(float projectedTestFace[],
 			FloatPointer pConfidencePointer, int k) {
@@ -536,7 +544,19 @@ public class FaceRecognizer {
 		}
 		int j = 0;
 		for(Iterator<IndexDistance> it = indexDistances.iterator(); it.hasNext() && j < k; j++){
-			nNearestIndexes[j] = it.next().getIndex();
+			boolean luWasAdded = false;
+			int luToAdd = trainPersonNumMat.data_i().get(it.next().getIndex());
+			for (int luAdded : nNearestIndexes) {
+				if (luAdded == luToAdd){
+					luWasAdded = true;
+					break;
+				}
+			}
+			if (!luWasAdded){
+				nNearestIndexes[j] = luToAdd;
+			}else{
+				j--;
+			}
 		}
 		float pConfidence = (float) (1.0f - Math.sqrt(leastDistSq
 				/ (float) (nTrainFaces * nEigens)) / 255.0f);

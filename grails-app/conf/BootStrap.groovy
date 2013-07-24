@@ -14,7 +14,7 @@ class BootStrap {
 			miralles.save()
 			
 			Course course = new Course();
-			course.setCourseNumber(1)
+			course.setCourseNumber(3)
 			course.setDayOfWeek(1) //monday
 			course.setName("Fisica General")
 			course.setHourFrom("07:45")
