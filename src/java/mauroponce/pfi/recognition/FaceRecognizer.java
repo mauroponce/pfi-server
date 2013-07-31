@@ -73,7 +73,7 @@ public class FaceRecognizer {
 	IplImage[] testFaceImgArr;
 	CvMat trainPersonNumMat;
 
-	public void learn(final String courseFolder) {
+	public void learn(final String courseFolder){
 		trainingFaceImgArr = loadFaceImgArrayFromImagesFolders(courseFolder);
 		nTrainFaces = trainingFaceImgArr.length;
 		if (nTrainFaces < 3) {//Se necesitan al menos 3 imagenes de entrenamiento
@@ -163,30 +163,46 @@ public class FaceRecognizer {
 				personNames.add(personName);
 				
 				for (final File imgFile : imageFolderFile.listFiles()) {
-					String imgFilename = imgFile.getAbsolutePath();
+					String imgFilePath = imgFile.getAbsolutePath();
 					personNumTruthMat.put(0, iFace, personNumber);
-					IplImage faceImage 
-						= cvLoadImage(imgFilename, CV_LOAD_IMAGE_GRAYSCALE);
-					if (faceImage == null) {
-						throw new RuntimeException("No se puede leer la imagen "
-								+ imgFilename);
+					
+					String imgDetectedFilePath = imageFolderFile.getAbsolutePath()+File.pathSeparator+"detected"+imgFile.getName();
+					if (imgFile.getName().contains("UADE")){
+						// the image is from UADE, we must to detect the face and then delete it
+						imgDetectedFilePath = imageFolderFile.getAbsolutePath()+File.pathSeparator+"detected"+imgFile.getName();
+						FaceDetection.detectOneFace(imgFilePath, null, imgDetectedFilePath);
+					}else{
+						imgDetectedFilePath = imgFilePath;				
 					}
+					
+					IplImage faceDetectedImage 
+					= cvLoadImage(imgDetectedFilePath, CV_LOAD_IMAGE_GRAYSCALE);
+					if (faceDetectedImage == null) {
+						throw new RuntimeException("No se puede leer la imagen "
+								+ imgFilePath);
+					}
+					
 					if (width == -1) {
-						width = faceImage.width();
-						height = faceImage.height();
-					} else if (faceImage.width() != width
-							|| faceImage.height() != height) {
-						faceImage = ImageUtils.resizeImage(faceImage, 103, 106);
+						width = faceDetectedImage.width();
+						height = faceDetectedImage.height();
+					} else if (faceDetectedImage.width() != width
+							|| faceDetectedImage.height() != height) {
+						faceDetectedImage = ImageUtils.resizeImage(faceDetectedImage, 103, 106);
 //						throw new RuntimeException("wrong size face in "
 //								+ imgFilename + "\nwanted " + width + "x"
 //								+ height + ", but found " + faceImage.width()
 //								+ "x" + faceImage.height());
 					}
 					// Give the image a standard brightness and contrast.
-					cvEqualizeHist(faceImage, faceImage);
+					cvEqualizeHist(faceDetectedImage, faceDetectedImage);
 					
-					faceImgArr[iFace] = faceImage;
+					faceImgArr[iFace] = faceDetectedImage;
 					iFace++;
+					
+					if (imgFile.getName().contains("UADE")){
+						//delete de cropped image
+						FileUtils.DeleteFile(imgDetectedFilePath);
+					}
 				}
 			}
 		}
