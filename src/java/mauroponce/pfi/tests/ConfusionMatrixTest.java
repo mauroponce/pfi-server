@@ -1,6 +1,7 @@
 package mauroponce.pfi.tests;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -16,31 +17,38 @@ public class ConfusionMatrixTest {
 	private static Integer[][] confusionMatriz;
 	private static Integer[][] confusionMatrizKNearest;
 	private static FaceRecognizer recognitionService;
-	private static Integer k = 3;
+	private static Integer LEARNING_IMAGES_COUNT = 3;
 	
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) {		
 		String recognitionCourseFolder = "a_reconocer";
-		processFolders("course_1", recognitionCourseFolder);
-		processFolders("course_2", recognitionCourseFolder);
-		processFolders("course_3", recognitionCourseFolder);
+		Integer k = getStudentsCount(recognitionCourseFolder);
+		for (int t = 1; t <= LEARNING_IMAGES_COUNT; t++) {
+			processFolders(t, recognitionCourseFolder, k);			
+		}
 	}
 
-	private static void processFolders(String learnCourseFolder,
-			String recognitionCourseFolder) {
+	private static Integer getStudentsCount(String recognitionCourseFolder) {
+		 File recognitionFolder = new File(AppConstants.TRAINING_IMAGES_ROOT_FOLDER + "/" + recognitionCourseFolder);
+		 Integer count = 0;
+		 count = recognitionFolder.list().length;
+		 return count;		
+	}
+
+	private static void processFolders(Integer t,
+			String recognitionCourseFolder, Integer k) {
 		recognitionService = new FaceRecognizer();
-		recognitionService.learn(learnCourseFolder);
-		createConfusionMatriz(recognitionCourseFolder);	
-		System.out.println("\n--- Matriz de Confusión ---");
-		printConfusionMatriz(confusionMatriz);
-		System.out.println("\n--- Matriz de Confusión Porcentual ---");
-		printProcentualConfusionMatriz(confusionMatriz);		
-		System.out.println("\n--- Matriz de Confusión "+k+" mas cercanos---");
-		printConfusionMatriz(confusionMatrizKNearest);
-		System.out.println("\n--- Matriz de Confusión Porcentual "+k+" mas cercanos---");
-		printProcentualConfusionMatriz(confusionMatrizKNearest);
+		recognitionService.learn("course_"+t);
+		System.out.println("\n\n PRUEBA T = "+t);
+		for (int i = 1; i <= k; i++) {
+			createConfusionMatriz(recognitionCourseFolder, i);
+			System.out.println("\n--- Matriz de Confusion "+i+" mas cercanos---");
+			printConfusionMatriz(confusionMatrizKNearest);
+			System.out.println("\n--- Matriz de Confusion Porcentual "+i+" mas cercanos---");
+			printProcentualConfusionMatriz(confusionMatrizKNearest);			
+		}
 	}
 
 	private static void printConfusionMatriz(Integer[][] matriz) {
@@ -88,7 +96,7 @@ public class ConfusionMatrixTest {
 		System.out.println("Performance: "+new DecimalFormat("#").format(performance));
 	}
 
-	private static void createConfusionMatriz(String recognitionCourseFolder) {
+	private static void createConfusionMatriz(String recognitionCourseFolder, Integer k) {
 		recognitionService = new FaceRecognizer();
 		 lusIndex = new HashMap<Integer, Integer>();
 		 lusActualCount = new HashMap<Integer, Integer>();
@@ -117,10 +125,10 @@ public class ConfusionMatrixTest {
 					String imgPath = img.getAbsolutePath();
 					List<Integer> luNearest = recognitionService.recognize(imgPath, k);
 					if (!luNearest.isEmpty()){
-						Integer luPredicted = luNearest.get(0);
-						Integer LuPredictedIndex = lusIndex.get(luPredicted);
-						//Add one in the confusion matriz for de actual and predicted index
-						confusionMatriz[luActualIndex][LuPredictedIndex]++;
+//						Integer luPredicted = luNearest.get(0);
+//						Integer LuPredictedIndex = lusIndex.get(luPredicted);
+//						//Add one in the confusion matriz for de actual and predicted index
+//						confusionMatriz[luActualIndex][LuPredictedIndex]++;
 						for (Integer luPredictedK: luNearest) {
 							//Create the matriz for the K nearest
 							Integer LuPredictedKIndex = lusIndex.get(luPredictedK);
