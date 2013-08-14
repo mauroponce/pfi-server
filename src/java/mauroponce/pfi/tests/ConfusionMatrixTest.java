@@ -140,12 +140,16 @@ public class ConfusionMatrixTest {
 //						Integer LuPredictedIndex = lusIndex.get(luPredicted);
 //						//Add one in the confusion matriz for de actual and predicted index
 //						confusionMatriz[luActualIndex][LuPredictedIndex]++;
+
+						//add one to the nearest if luActual is not in the list
+						Integer luPredictedKIndex = lusIndex.get(luNearest.get(0));
 						for (Integer luPredictedK: luNearest) {
-							//Create the matriz for the K nearest
-							Integer LuPredictedKIndex = lusIndex.get(luPredictedK);
-							//Add one in the confusion matriz for de actual and predicted index
-							confusionMatrizKNearest[luActualIndex][LuPredictedKIndex]++;							
+							if (luPredictedK.equals(luActual)){
+								//Add one in the confusion matriz for the luActual
+								luPredictedKIndex = lusIndex.get(luPredictedK);
+							}
 						}
+						confusionMatrizKNearest[luActualIndex][luPredictedKIndex]++;							
 					}
 				}
 			 }			
