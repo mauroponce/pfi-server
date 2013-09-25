@@ -71,10 +71,10 @@ class AttendanceService {
     	return foundCourse;
     }
 	
-	def sendTrainingImage(Integer studentLU, String encodedImageBase64, String fileExtension){
-		String outputPath = AppConstants.TRAINING_IMAGES_ROOT_FOLDER		
-			+ "/" + studentLU + "/" + new Date().getTime() + "." + fileExtension;
-		System.out.println(outputPath);
+	def sendTrainingImage(final Integer studentLU, final String encodedImageBase64, final String fileExtension){
+		String fileName = new Date().getTime().toString() + "." + fileExtension;
+		String outputPath = AppConstants.TRAINING_IMAGES_ROOT_FOLDER + "/" + studentLU + "/" + fileName;
+			
 		FileUtils.decodeFileBase64(encodedImageBase64, outputPath);
 	}
 	
