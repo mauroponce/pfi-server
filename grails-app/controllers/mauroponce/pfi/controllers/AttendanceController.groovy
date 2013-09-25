@@ -15,12 +15,12 @@ class AttendanceController {
 	
 	static allowedMethods = [
 		save: 'POST',
-		facesdata: 'GET'
+		facesdata: 'GET',
+		send_training_data: 'POST'
 	]
 	
 	// http://localhost:8080/PFI/attendance/facesdata?usr=mmiralles&d=2012-10-15-09:30
-	def facesdata() {
-		println(params)
+	def facesdata() {		
 		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH:mm");
 		// DateTime date1 = formatter.parseDateTime("2012-10-15 09:30");
 		String username = params.usr		
@@ -38,5 +38,12 @@ class AttendanceController {
 		def result = [saved: returned != null]
 		render result as JSON
 		/*Agregar restricciones a Attendance para q no permita duplicados. Ahora guarda siempre*/
-	}	
+	}
+	
+	// http://localhost:8080/PFI/attendance/send_training_data
+	// post: Integer studentLU, String encodedImageBase64, String fileExtension
+	def send_training_data(){
+		def jsonParams = request.JSON
+		attendanceService.sendTrainingImage(jsonParams.studentLU, jsonParams.encodedImageBase64, jsonParams.fileExtension)
+	}
 }
