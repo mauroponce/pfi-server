@@ -72,7 +72,7 @@ public class FaceDetection {
 //
 //		// Save the image to a new file.
 //		cvSaveImage("C:\\Users\\smoral\\Desktop\\tmp\\"+fileOutputName+".jpg", originalImage);
-		System.out.println("Printe image "+haarCascadeFileName);
+		// System.out.println("Printe image "+haarCascadeFileName);
 	}
 	
 	public static void detectOneFace(String fileInputPath, String haarCascadeFileName, String fileOutputPath) {
@@ -119,7 +119,7 @@ public class FaceDetection {
 			// Save resized image to a new file.
 			
 			cvSaveImage(fileOutputPath, imageResized);
-			System.out.println("Saved image "+fileOutputPath);
+			// System.out.println("Saved image "+fileOutputPath);
 		}
 	}
 }

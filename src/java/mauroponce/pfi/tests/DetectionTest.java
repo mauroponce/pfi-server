@@ -1,6 +1,8 @@
 package mauroponce.pfi.tests;
 
 import java.io.File;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import mauroponce.pfi.recognition.FaceDetection;
 
@@ -15,17 +17,17 @@ public class DetectionTest {
 		File fotosFolder = new File("C:/Users/smoral/Documents/PFI/fotos");
 		
 		for (File studentFolder : fotosFolder.listFiles()) {
-			Integer i = 1;
-			for (File studentImg : studentFolder.listFiles()) {
-				if (!studentImg.isDirectory()){
-					if(studentImg.getName().equals("19.jpg")){
-						FaceDetection.detectMultipleFaces(studentImg.getAbsolutePath(),
-								"haarcascade_frontalface_alt.xml",
-								studentFolder.getAbsolutePath() + "/detected/" + i.toString()); 
-						i++;
+			if (studentFolder.isDirectory()){
+				for (File studentImg : studentFolder.listFiles()) {
+					if (!studentImg.isDirectory()){
+						if(studentImg.getName().equals("95.jpg")||studentImg.getName().equals("96.jpg")){
+							FaceDetection.detectMultipleFaces(studentImg.getAbsolutePath(),
+									"haarcascade_frontalface_alt.xml",
+									studentFolder.getAbsolutePath() + "/detected/" + "detected_"+new Date().getTime()); 
+						}
 					}
 				}
-			}				
+			}
 		}
 		
 //		FaceDetection.detectFaces(fileInputPath, "haarcascade_frontalface_alt2.xml");

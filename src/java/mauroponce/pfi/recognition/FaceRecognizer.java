@@ -242,11 +242,11 @@ public class FaceRecognizer {
 			}
 		}
 		*/
-		System.out.println("Images: " + nFaces);
-		System.out.println("Persons: " + nPersons);
+		// System.out.println("Images: " + nFaces);
+		// System.out.println("Persons: " + nPersons);
 		if (nPersons > 0) {
 			for (String pName : personNames) {
-				System.out.println(pName);
+				// System.out.println(pName);
 			}
 		}
 
@@ -259,7 +259,7 @@ public class FaceRecognizer {
 		CvSize faceImgSize = new CvSize();
 
 		nEigens = nTrainFaces - 1;
-		System.out.println("Eigenvalues: " + nEigens);
+		// System.out.println("Eigenvalues: " + nEigens);
 		
 		faceImgSize.width(trainingFaceImgArr[0].width());
 		faceImgSize.height(trainingFaceImgArr[0].height());
@@ -404,7 +404,7 @@ public class FaceRecognizer {
 			for(int j = 0 ; j < knn.length; j++){
 				nearestsLus.add(knn[j]);
 			}
-			System.out.println("Mas cercano: " + nearest);
+			// System.out.println("Mas cercano: " + nearest);
 		}
 		
 		return nearestsLus; 
@@ -549,14 +549,14 @@ public class FaceRecognizer {
 			}
 			distances[iTrain] = distSq;
 			indexDistances.add(new IndexDistance(iTrain, distSq));
-			System.out.println("iTrain: " + iTrain + ", distance: " + distSq);
+			// System.out.println("iTrain: " + iTrain + ", distance: " + distSq);
 		}
-		System.out.println("Least: " + iNearest + ", Distance: "+ leastDistSq);
-		System.out.println("\n\nTreeSet\n\n");
+		// System.out.println("Least: " + iNearest + ", Distance: "+ leastDistSq);
+		// System.out.println("\n\nTreeSet\n\n");
 		
 		for(IndexDistance indexDistance : indexDistances){
-			System.out.println("Index: " + indexDistance.getIndex()
-					+ ", Distance: " + indexDistance.getDistance());
+			// System.out.println("Index: " + indexDistance.getIndex()
+					//+ ", Distance: " + indexDistance.getDistance());
 		}
 		int j = 0;
 		for(Iterator<IndexDistance> it = indexDistances.iterator(); it.hasNext() && j < k; j++){
