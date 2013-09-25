@@ -71,8 +71,9 @@ public class FaceRecognizer {
 	final List<String> personNames = new ArrayList<String>();
 	CvMat personNumTruthMat;
 	IplImage[] testFaceImgArr;
+	CvMat trainPersonNumMat;
 
-	public void learn(final String courseFolder) {
+	public void learn(final String courseFolder){
 		trainingFaceImgArr = loadFaceImgArrayFromImagesFolders(courseFolder);
 		nTrainFaces = trainingFaceImgArr.length;
 		if (nTrainFaces < 3) {//Se necesitan al menos 3 imagenes de entrenamiento
@@ -162,30 +163,46 @@ public class FaceRecognizer {
 				personNames.add(personName);
 				
 				for (final File imgFile : imageFolderFile.listFiles()) {
-					String imgFilename = imgFile.getAbsolutePath();
+					String imgFilePath = imgFile.getAbsolutePath();
 					personNumTruthMat.put(0, iFace, personNumber);
-					IplImage faceImage 
-						= cvLoadImage(imgFilename, CV_LOAD_IMAGE_GRAYSCALE);
-					if (faceImage == null) {
-						throw new RuntimeException("No se puede leer la imagen "
-								+ imgFilename);
+					
+					String imgDetectedFilePath = imageFolderFile.getAbsolutePath()+File.pathSeparator+"detected"+imgFile.getName();
+					if (imgFile.getName().contains("UADE")){
+						// the image is from UADE, we must to detect the face and then delete it
+						imgDetectedFilePath = imageFolderFile.getAbsolutePath()+File.pathSeparator+"detected"+imgFile.getName();
+						FaceDetection.detectOneFace(imgFilePath, null, imgDetectedFilePath);
+					}else{
+						imgDetectedFilePath = imgFilePath;				
 					}
+					
+					IplImage faceDetectedImage 
+					= cvLoadImage(imgDetectedFilePath, CV_LOAD_IMAGE_GRAYSCALE);
+					if (faceDetectedImage == null) {
+						throw new RuntimeException("No se puede leer la imagen "
+								+ imgFilePath);
+					}
+					
 					if (width == -1) {
-						width = faceImage.width();
-						height = faceImage.height();
-					} else if (faceImage.width() != width
-							|| faceImage.height() != height) {
-						faceImage = ImageUtils.resizeImage(faceImage, 103, 106);
+						width = faceDetectedImage.width();
+						height = faceDetectedImage.height();
+					} else if (faceDetectedImage.width() != width
+							|| faceDetectedImage.height() != height) {
+						faceDetectedImage = ImageUtils.resizeImage(faceDetectedImage, 103, 106);
 //						throw new RuntimeException("wrong size face in "
 //								+ imgFilename + "\nwanted " + width + "x"
 //								+ height + ", but found " + faceImage.width()
 //								+ "x" + faceImage.height());
 					}
 					// Give the image a standard brightness and contrast.
-					cvEqualizeHist(faceImage, faceImage);
+					cvEqualizeHist(faceDetectedImage, faceDetectedImage);
 					
-					faceImgArr[iFace] = faceImage;
+					faceImgArr[iFace] = faceDetectedImage;
 					iFace++;
+					
+					if (imgFile.getName().contains("UADE")){
+						//delete de cropped image
+						FileUtils.DeleteFile(imgDetectedFilePath);
+					}
 				}
 			}
 		}
@@ -225,11 +242,11 @@ public class FaceRecognizer {
 			}
 		}
 		*/
-		System.out.println("Images: " + nFaces);
-		System.out.println("Persons: " + nPersons);
+		// System.out.println("Images: " + nFaces);
+		// System.out.println("Persons: " + nPersons);
 		if (nPersons > 0) {
 			for (String pName : personNames) {
-				System.out.println(pName);
+				// System.out.println(pName);
 			}
 		}
 
@@ -242,7 +259,7 @@ public class FaceRecognizer {
 		CvSize faceImgSize = new CvSize();
 
 		nEigens = nTrainFaces - 1;
-		System.out.println("Eigenvalues: " + nEigens);
+		// System.out.println("Eigenvalues: " + nEigens);
 		
 		faceImgSize.width(trainingFaceImgArr[0].width());
 		faceImgSize.height(trainingFaceImgArr[0].height());
@@ -347,24 +364,26 @@ public class FaceRecognizer {
 			cvReleaseImage(bigImg);
 		}
 	}
-
-	public void recognize(final String testImagePath, int n) {
+	
+	/**Finds the k most similar faces.*/
+	public ArrayList<Integer> recognize(final String testImagePath, final int k) {
 		int i = 0;
 		int nTestFaces = 0;
-		CvMat trainPersonNumMat;
 		float[] projectedTestFace;
 		float confidence = 0.0f;
-
+		ArrayList<Integer> nearestsLus = null;
+		
+		
+		
 		testFaceImgArr = loadFaceImgArrayFromImagePath(testImagePath);
 		nTestFaces = testFaceImgArr.length;
 		trainPersonNumMat = loadTrainingData();
 		if (trainPersonNumMat == null) {
-			return;
+			return nearestsLus;
 		}
 		projectedTestFace = new float[nEigens];
 
 		for (i = 0; i < nTestFaces; i++) {
-			int iNearest;
 			int nearest;
 
 			cvEigenDecomposite(testFaceImgArr[i], // obj
@@ -376,14 +395,19 @@ public class FaceRecognizer {
 					projectedTestFace); // coeffs
 
 			final FloatPointer pConfidence = new FloatPointer(confidence);
-			iNearest = getKNN(projectedTestFace, new FloatPointer(
-					pConfidence), n)[0];
+			int [] knn = getKNN(projectedTestFace, new FloatPointer(
+					pConfidence), k);
 			
 			confidence = pConfidence.get();
-			nearest = trainPersonNumMat.data_i().get(iNearest);
-
-			System.out.println("Nearest: " + nearest);
+			nearest = knn[0];
+			nearestsLus = new ArrayList<Integer>();
+			for(int j = 0 ; j < knn.length; j++){
+				nearestsLus.add(knn[j]);
+			}
+			// System.out.println("Mas cercano: " + nearest);
 		}
+		
+		return nearestsLus; 
 	}
 
 	private CvMat loadTrainingData() {
@@ -452,7 +476,7 @@ public class FaceRecognizer {
 		
 		return pTrainPersonNumMat;
 	}
-
+	
 	private IplImage[] loadFaceImgArrayFromImagePath(final String imagePath) {
 		IplImage[] faceImgArr;
 		int iFace = 0;
@@ -491,11 +515,11 @@ public class FaceRecognizer {
 		// Give the image a standard brightness and contrast.
 		cvEqualizeHist(faceImage, faceImage);
 		
-		
 		faceImgArr[iFace] = faceImage;
 		iFace++;		
 		return faceImgArr;
 	}
+
 	/**Get the K nearest neighbors.*/
 	private int [] getKNN(float projectedTestFace[],
 			FloatPointer pConfidencePointer, int k) {
@@ -525,18 +549,30 @@ public class FaceRecognizer {
 			}
 			distances[iTrain] = distSq;
 			indexDistances.add(new IndexDistance(iTrain, distSq));
-			System.out.println("iTrain: " + iTrain + ", distance: " + distSq);
+			// System.out.println("iTrain: " + iTrain + ", distance: " + distSq);
 		}
-		System.out.println("Least: " + iNearest + ", Distance: "+ leastDistSq);
-		System.out.println("\n\nTreeSet\n\n");
+		// System.out.println("Least: " + iNearest + ", Distance: "+ leastDistSq);
+		// System.out.println("\n\nTreeSet\n\n");
 		
 		for(IndexDistance indexDistance : indexDistances){
-			System.out.println("Index: " + indexDistance.getIndex()
-					+ ", Distance: " + indexDistance.getDistance());
+			// System.out.println("Index: " + indexDistance.getIndex()
+					//+ ", Distance: " + indexDistance.getDistance());
 		}
 		int j = 0;
 		for(Iterator<IndexDistance> it = indexDistances.iterator(); it.hasNext() && j < k; j++){
-			nNearestIndexes[j] = it.next().getIndex();
+			boolean luWasAdded = false;
+			int luToAdd = trainPersonNumMat.data_i().get(it.next().getIndex());
+			for (int luAdded : nNearestIndexes) {
+				if (luAdded == luToAdd){
+					luWasAdded = true;
+					break;
+				}
+			}
+			if (!luWasAdded){
+				nNearestIndexes[j] = luToAdd;
+			}else{
+				j--;
+			}
 		}
 		float pConfidence = (float) (1.0f - Math.sqrt(leastDistSq
 				/ (float) (nTrainFaces * nEigens)) / 255.0f);

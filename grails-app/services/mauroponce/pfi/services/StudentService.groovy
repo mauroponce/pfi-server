@@ -13,9 +13,9 @@ class StudentService {
 			student.setLU(studentFolder.getName().toInteger())			
 			for (File studentImg : studentFolder.listFiles()) {				
 				def nameParts = studentImg.getName().split("_")
-				if (nameParts.length > 2 && !"PFI".equals(nameParts[0])){
-					student.setFirstName(nameParts[0])
-					student.setLastName(nameParts[1])
+				if (nameParts.length > 2 && "UADE".equals(nameParts[0])){
+					student.setFirstName(nameParts[1])
+					student.setLastName(nameParts[2])
 					student.setEncodedImage(FileUtils.encodeFileBase64(studentImg.getAbsolutePath()))
 					break					
 				}				
