@@ -102,4 +102,9 @@ public class FileUtils {
 		}
 		return null;
 	}
+
+	public static void DeleteFile(String filePathToDelete) {
+		File fileToDelete = new File(filePathToDelete);
+		fileToDelete.delete();
+	}
 }

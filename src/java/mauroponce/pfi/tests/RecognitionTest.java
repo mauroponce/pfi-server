@@ -12,6 +12,6 @@ public class RecognitionTest {
 //		String [] imagesFolders = {"131445", "131900", "131455", "131431"};
 		String courseFolderName = "course_1";
 		recognitionService.learn(courseFolderName);
-		recognitionService.recognize(testImagePath, k);
+//		recognitionService.recognize(testImagePath, k);
 	}	
 }
