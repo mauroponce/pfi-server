@@ -2,11 +2,13 @@ package mauroponce.pfi.controllers
 
 import grails.converters.JSON
 import mauroponce.pfi.domain.Student
+import mauroponce.pfi.domain.Course
 
 class StudentController {
 	
 	static allowedMethods = [
-		data: 'GET'
+		data: 'GET',
+		course_students: 'GET'
 	]
 	
 	// http://localhost:8080/PFI/student/data/131445
@@ -16,6 +18,30 @@ class StudentController {
 		
 		render jsonData as JSON		
 	}
+	
+	// http://localhost:8080/PFI/student/course_students/1
+	// returns all the students of the course
+	def course_students(){
+		Integer courseId = params.id.toInteger()
+		Course course;
+		Course.withTransaction{
+			course = Course.get(courseId) 	
+		}
+		def students = course.getStudents()
+		def students_data = []
+		
+		for(Student student : students){
+			def data = [
+				lu: student.getLU(),
+				firstName: student.getFirstName(),
+				lastName: student.getLastName(),
+				encodedImage: student.getEncodedImage()
+			]
+			students_data.add(data)		
+		}		
+		render students_data as JSON
+	}
+	
 	// http://localhost:8080/PFI/student/batch_data/131445_131900_131455
 	def batch_data(){
 		String lus = params.id.toString()
@@ -29,7 +55,8 @@ class StudentController {
 		render students_data as JSON
 		
 	}
-	def student_data(lu){
+	
+	private def student_data(lu){
 		Student student
 		def data;
 		Student.withTransaction {
@@ -46,4 +73,5 @@ class StudentController {
 		
 		return data
 	}
+	
 }
