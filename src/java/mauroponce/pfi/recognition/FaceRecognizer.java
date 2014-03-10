@@ -1,4 +1,6 @@
 package mauroponce.pfi.recognition;
+import static com.googlecode.javacv.cpp.opencv_contrib.createFisherFaceRecognizer;
+import static com.googlecode.javacv.cpp.opencv_contrib.createEigenFaceRecognizer;
 import static com.googlecode.javacv.cpp.opencv_core.CV_32FC1;
 import static com.googlecode.javacv.cpp.opencv_core.CV_32SC1;
 import static com.googlecode.javacv.cpp.opencv_core.CV_L1;
@@ -29,13 +31,17 @@ import static com.googlecode.javacv.cpp.opencv_core.cvWriteString;
 import static com.googlecode.javacv.cpp.opencv_highgui.CV_LOAD_IMAGE_GRAYSCALE;
 import static com.googlecode.javacv.cpp.opencv_highgui.cvLoadImage;
 import static com.googlecode.javacv.cpp.opencv_highgui.cvSaveImage;
+import static com.googlecode.javacv.cpp.opencv_imgproc.CV_BGR2GRAY;
+import static com.googlecode.javacv.cpp.opencv_imgproc.cvCvtColor;
+import static com.googlecode.javacv.cpp.opencv_imgproc.cvEqualizeHist;
 import static com.googlecode.javacv.cpp.opencv_legacy.CV_EIGOBJ_NO_CALLBACK;
 import static com.googlecode.javacv.cpp.opencv_legacy.cvCalcEigenObjects;
 import static com.googlecode.javacv.cpp.opencv_legacy.cvEigenDecomposite;
-import static com.googlecode.javacv.cpp.opencv_imgproc.cvEqualizeHist;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -55,6 +61,7 @@ import com.googlecode.javacv.cpp.opencv_core.CvRect;
 import com.googlecode.javacv.cpp.opencv_core.CvSize;
 import com.googlecode.javacv.cpp.opencv_core.CvTermCriteria;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
+import com.googlecode.javacv.cpp.opencv_core.MatVector;
 
 public class FaceRecognizer {
 	
@@ -580,4 +587,62 @@ public class FaceRecognizer {
 		
 		return nNearestIndexes;
 	}
+	
+	public void fisherFacesRecognition(String courseFolder, String imageDir) {
+        IplImage testImage = cvLoadImage(imageDir);
+
+        List<File> imageFolderFiles = new ArrayList<File>();
+		
+		File courseFolderFile = new File(AppConstants.TRAINING_IMAGES_ROOT_FOLDER + "/" + courseFolder);
+
+		if(courseFolderFile.isDirectory()){
+			for (String imageFolderName : courseFolderFile.list()) {
+				File imageFolderFile = new File(AppConstants.TRAINING_IMAGES_ROOT_FOLDER + "/" + courseFolder + "/" + imageFolderName);
+				imageFolderFiles.addAll(Arrays.asList(imageFolderFile.listFiles()));
+			} 
+		}
+		
+		Object[] imageFiles = imageFolderFiles.toArray();
+		
+        MatVector images = new MatVector(imageFiles.length);
+
+        int[] labels = new int[imageFiles.length];
+        String[] labelsString = new String[imageFiles.length];
+
+        int counter = 0;
+
+        IplImage img;
+        IplImage grayImg;
+
+        for (Object object : imageFiles) {
+        	File image = (File) object;
+            img = cvLoadImage(image.getAbsolutePath());
+            img = ImageUtils.resizeImage(img, 200, 200);
+            grayImg = IplImage.create(img.width(), img.height(), IPL_DEPTH_8U, 1);
+
+            cvCvtColor(img, grayImg, CV_BGR2GRAY);
+
+            images.put(counter, grayImg);
+
+            labels[counter] = counter;
+            labelsString[counter] = image.getName();
+
+            counter++;
+        }
+
+        IplImage greyTestImage = IplImage.create(testImage.width(), testImage.height(), IPL_DEPTH_8U, 1);
+
+        com.googlecode.javacv.cpp.opencv_contrib.FaceRecognizer faceRecognizer = createFisherFaceRecognizer();
+//        com.googlecode.javacv.cpp.opencv_contrib.FaceRecognizer faceRecognizer = createEigenFaceRecognizer();
+        // FaceRecognizer faceRecognizer = createLBPHFaceRecognizer()
+
+        faceRecognizer.train(images, labels);
+
+        cvCvtColor(testImage, greyTestImage, CV_BGR2GRAY);
+
+        int predictedLabel = faceRecognizer.predict(greyTestImage);
+
+        System.out.println("Predicted label: " + labelsString[predictedLabel]);
+    }
 }
+

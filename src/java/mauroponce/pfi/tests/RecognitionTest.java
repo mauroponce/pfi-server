@@ -4,7 +4,7 @@ import mauroponce.pfi.recognition.*;
 
 public class RecognitionTest {
 //	static String testImagePath = "C:/Users/Mauro/Documents/PFI/test/moralito.jpg";
-	static String testImagePath = "C:/Users/smoral/Documents/PFI/faces/course_1/131900/1369949889431.jpg";
+	static String testImagePath = "C:/Users/smoral/Documents/PFI/faces/UADE_Santiago_Moral_.jpg";
 	
 	public static void main(String[] args) {
 		int k = 3;//number of nearest neighbors
@@ -12,6 +12,11 @@ public class RecognitionTest {
 //		String [] imagesFolders = {"131445", "131900", "131455", "131431"};
 		String courseFolderName = "course_1";
 		recognitionService.learn(courseFolderName);
-//		recognitionService.recognize(testImagePath, k);
+		recognitionService.recognize(testImagePath, k);
+		
+		System.out.println("----------------------- FISHER FACES ------------------------");
+		
+		FaceRecognizerFisher faceRecognizerFisher = new FaceRecognizerFisher();
+		faceRecognizerFisher.fisherFacesRecognition(courseFolderName, testImagePath);
 	}	
 }

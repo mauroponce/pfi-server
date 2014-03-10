@@ -1,0 +1,198 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x659db400, pid=1836, tid=7488
+#
+# JRE version: 6.0_21-b07
+# Java VM: Java HotSpot(TM) Client VM (17.0-b17 mixed mode, sharing windows-x86 )
+# Problematic frame:
+# C  [opencv_core245.dll+0x4b400]
+#
+# If you would like to submit a bug report, please visit:
+#   http://java.sun.com/webapps/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x01d9f000):  JavaThread "main" [_thread_in_native, id=7488, stack(0x001f0000,0x00240000)]
+
+siginfo: ExceptionCode=0xc0000005, reading address 0x05f2d7d1
+
+Registers:
+EAX=0x00000000, EBX=0x0023f5a0, ECX=0x06100040, EDX=0x05f2d7d3
+ESP=0x0023f1c8, EBP=0x0023f1d8, ESI=0x00009c3c, EDI=0x06100030
+EIP=0x659db400, EFLAGS=0x00010206
+
+Top of Stack: (sp=0x0023f1c8)
+0x0023f1c8:   00000000 0023f5a0 00000001 0004e200
+0x0023f1d8:   0023f1f0 659dd166 00009c40 06100030
+0x0023f1e8:   00009c40 00000000 0023f3b8 659e0921
+0x0023f1f8:   05f2d7d0 00009c40 00000000 00000000
+0x0023f208:   06100030 0004e200 00009c40 00000001
+0x0023f218:   0023f22c af97844f 00000000 0023fb38
+0x0023f228:   00000000 00000000 3ff00000 00000000
+0x0023f238:   00000000 00000003 6cb40000 00000080 
+
+Instructions: (pc=0x659db400)
+0x659db3f0:   ff 4d 14 33 c0 85 f6 78 56 8d 4f 10 8d 64 24 00
+0x659db400:   0f b6 5c 02 fe 0f 57 c0 f2 0f 2a c3 0f b6 5c 02 
+
+
+Stack: [0x001f0000,0x00240000],  sp=0x0023f1c8,  free space=13c0023ecack
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [opencv_core245.dll+0x4b400]
+C  [opencv_core245.dll+0x4d166]
+C  [opencv_core245.dll+0x50921]
+C  [opencv_contrib245.dll+0x3d655]
+C  [opencv_contrib245.dll+0x43cb7]
+C  [jniopencv_contrib.dll+0x10058]
+j  com.googlecode.javacv.cpp.opencv_contrib$FaceRecognizer.train(Lcom/googlecode/javacv/cpp/opencv_core$MatVector;[I)V+0
+j  mauroponce.pfi.recognition.FaceRecognizerFisher.fisherFacesRecognition(Ljava/lang/String;Ljava/lang/String;)V+364
+j  mauroponce.pfi.tests.RecognitionTest.main([Ljava/lang/String;)V+49
+v  ~StubRoutines::call_stub
+V  [jvm.dll+0xf3abc]
+V  [jvm.dll+0x1865b1]
+V  [jvm.dll+0xf3b3d]
+V  [jvm.dll+0xfd385]
+V  [jvm.dll+0x104fdd]
+C  [javaw.exe+0x2155]
+C  [javaw.exe+0x8614]
+C  [kernel32.dll+0x1336a]
+C  [ntdll.dll+0x39f72]
+C  [ntdll.dll+0x39f45]
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  com.googlecode.javacv.cpp.opencv_contrib$FaceRecognizer.train(Lcom/googlecode/javacv/cpp/opencv_core$MatVector;[I)V+0
+j  mauroponce.pfi.recognition.FaceRecognizerFisher.fisherFacesRecognition(Ljava/lang/String;Ljava/lang/String;)V+364
+j  mauroponce.pfi.tests.RecognitionTest.main([Ljava/lang/String;)V+49
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x01df1000 JavaThread "Low Memory Detector" daemon [_thread_blocked, id=5356, stack(0x049d0000,0x04a20000)]
+  0x01dd7000 JavaThread "CompilerThread0" daemon [_thread_blocked, id=1312, stack(0x04940000,0x04990000)]
+  0x01dd6000 JavaThread "Attach Listener" daemon [_thread_blocked, id=2236, stack(0x048b0000,0x04900000)]
+  0x01dd3000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=6196, stack(0x04820000,0x04870000)]
+  0x01dc7000 JavaThread "Finalizer" daemon [_thread_blocked, id=5920, stack(0x04790000,0x047e0000)]
+  0x01dc5800 JavaThread "Reference Handler" daemon [_thread_blocked, id=7332, stack(0x04700000,0x04750000)]
+=>0x01d9f000 JavaThread "main" [_thread_in_native, id=7488, stack(0x001f0000,0x00240000)]
+
+Other Threads:
+  0x01dc4400 VMThread [stack: 0x04670000,0x046c0000] [id=7472]
+  0x01e02c00 WatcherThread [stack: 0x04a60000,0x04ab0000] [id=3344]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ def new generation   total 4928K, used 331K [0x241a0000, 0x246f0000, 0x296f0000)
+  eden space 4416K,   2% used [0x241a0000, 0x241b62c8, 0x245f0000)
+  from space 512K,  47% used [0x245f0000, 0x2462cc58, 0x24670000)
+  to   space 512K,   0% used [0x24670000, 0x24670000, 0x246f0000)
+ tenured generation   total 10944K, used 539K [0x296f0000, 0x2a1a0000, 0x341a0000)
+   the space 10944K,   4% used [0x296f0000, 0x29776f10, 0x29777000, 0x2a1a0000)
+ compacting perm gen  total 12288K, used 2425K [0x341a0000, 0x34da0000, 0x381a0000)
+   the space 12288K,  19% used [0x341a0000, 0x343fe7a0, 0x343fe800, 0x34da0000)
+    ro space 10240K,  54% used [0x381a0000, 0x3871c0f0, 0x3871c200, 0x38ba0000)
+    rw space 12288K,  55% used [0x38ba0000, 0x3923fb80, 0x3923fc00, 0x397a0000)
+
+Dynamic libraries:
+0x00400000 - 0x00424000 	C:\Program Files (x86)\Java\jdk1.6.0_21\bin\javaw.exe
+0x77a40000 - 0x77bc0000 	C:\windows\SysWOW64\ntdll.dll
+0x76ba0000 - 0x76cb0000 	C:\windows\syswow64\kernel32.dll
+0x76290000 - 0x762d7000 	C:\windows\syswow64\KERNELBASE.dll
+0x76ad0000 - 0x76b70000 	C:\windows\syswow64\ADVAPI32.dll
+0x77510000 - 0x775bc000 	C:\windows\syswow64\msvcrt.dll
+0x775c0000 - 0x775d9000 	C:\windows\SysWOW64\sechost.dll
+0x76750000 - 0x76840000 	C:\windows\syswow64\RPCRT4.dll
+0x75460000 - 0x754c0000 	C:\windows\syswow64\SspiCli.dll
+0x75450000 - 0x7545c000 	C:\windows\syswow64\CRYPTBASE.dll
+0x76520000 - 0x76620000 	C:\windows\syswow64\USER32.dll
+0x76490000 - 0x76520000 	C:\windows\syswow64\GDI32.dll
+0x76370000 - 0x7637a000 	C:\windows\syswow64\LPK.dll
+0x76380000 - 0x7641d000 	C:\windows\syswow64\USP10.dll
+0x775e0000 - 0x77640000 	C:\windows\system32\IMM32.DLL
+0x76840000 - 0x7690c000 	C:\windows\syswow64\MSCTF.dll
+0x7c340000 - 0x7c396000 	C:\Program Files (x86)\Java\jdk1.6.0_21\jre\bin\msvcr71.dll
+0x6d8b0000 - 0x6db57000 	C:\Program Files (x86)\Java\jdk1.6.0_21\jre\bin\client\jvm.dll
+0x73860000 - 0x73892000 	C:\windows\system32\WINMM.dll
+0x72150000 - 0x7219c000 	C:\windows\system32\apphelp.dll
+0x6d860000 - 0x6d86c000 	C:\Program Files (x86)\Java\jdk1.6.0_21\jre\bin\verify.dll
+0x6d3e0000 - 0x6d3ff000 	C:\Program Files (x86)\Java\jdk1.6.0_21\jre\bin\java.dll
+0x6d340000 - 0x6d348000 	C:\Program Files (x86)\Java\jdk1.6.0_21\jre\bin\hpi.dll
+0x76910000 - 0x76915000 	C:\windows\syswow64\PSAPI.DLL
+0x6d8a0000 - 0x6d8af000 	C:\Program Files (x86)\Java\jdk1.6.0_21\jre\bin\zip.dll
+0x71ef0000 - 0x71faf000 	C:\Windows\System32\msvcr100.dll
+0x72960000 - 0x729c9000 	C:\Windows\System32\msvcp100.dll
+0x65990000 - 0x65b8f000 	C:\Users\smoral\Development\javacv-windows-x86\com\googlecode\javacv\cpp\windows-x86\opencv_core245.dll
+0x6cb40000 - 0x6cbb4000 	C:\Users\smoral\AppData\Local\Temp\javacpp24819801109740\jniopencv_core.dll
+0x6ae70000 - 0x6b0d1000 	C:\Users\smoral\Development\javacv-windows-x86\com\googlecode\javacv\cpp\windows-x86\opencv_imgproc245.dll
+0x74df0000 - 0x74e29000 	C:\Users\smoral\AppData\Local\Temp\javacpp24819801109740\jniopencv_imgproc.dll
+0x70fc0000 - 0x71d59000 	C:\Users\smoral\Development\javacv-windows-x86\com\googlecode\javacv\cpp\windows-x86\opencv_ffmpeg245.dll
+0x738d0000 - 0x738d7000 	C:\windows\system32\WSOCK32.DLL
+0x76cb0000 - 0x76ce5000 	C:\windows\syswow64\WS2_32.dll
+0x76420000 - 0x76426000 	C:\windows\syswow64\NSI.dll
+0x65780000 - 0x6598a000 	C:\Users\smoral\Development\javacv-windows-x86\com\googlecode\javacv\cpp\windows-x86\opencv_highgui245.dll
+0x77070000 - 0x771cc000 	C:\windows\syswow64\ole32.dll
+0x77250000 - 0x772df000 	C:\windows\syswow64\OLEAUT32.dll
+0x72bb0000 - 0x72d4e000 	C:\windows\WinSxS\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.7601.17514_none_41e6975e2bd6f2b2\COMCTL32.dll
+0x755e0000 - 0x75637000 	C:\windows\syswow64\SHLWAPI.dll
+0x74ea0000 - 0x74eb9000 	C:\windows\system32\AVIFIL32.dll
+0x6ef30000 - 0x6ef44000 	C:\windows\system32\MSACM32.dll
+0x72e90000 - 0x72eb1000 	C:\windows\system32\MSVFW32.dll
+0x75640000 - 0x7628a000 	C:\windows\syswow64\SHELL32.dll
+0x74c30000 - 0x74c43000 	C:\windows\system32\AVICAP32.dll
+0x73a10000 - 0x73a19000 	C:\windows\system32\VERSION.dll
+0x74e90000 - 0x74e9f000 	C:\Users\smoral\AppData\Local\Temp\javacpp24819801109740\jniopencv_highgui.dll
+0x6ca40000 - 0x6cabc000 	C:\Users\smoral\Development\javacv-windows-x86\com\googlecode\javacv\cpp\windows-x86\opencv_flann245.dll
+0x6dff0000 - 0x6e004000 	C:\Users\smoral\AppData\Local\Temp\javacpp24819801109740\jniopencv_flann.dll
+0x6b6a0000 - 0x6b755000 	C:\Users\smoral\Development\javacv-windows-x86\com\googlecode\javacv\cpp\windows-x86\opencv_features2d245.dll
+0x6de50000 - 0x6de87000 	C:\Users\smoral\AppData\Local\Temp\javacpp24819801109740\jniopencv_features2d.dll
+0x69c90000 - 0x69d56000 	C:\Users\smoral\Development\javacv-windows-x86\com\googlecode\javacv\cpp\windows-x86\opencv_calib3d245.dll
+0x6dfd0000 - 0x6dfed000 	C:\Users\smoral\AppData\Local\Temp\javacpp24819801109740\jniopencv_calib3d.dll
+0x6cad0000 - 0x6cb38000 	C:\Users\smoral\Development\javacv-windows-x86\com\googlecode\javacv\cpp\windows-x86\opencv_nonfree245.dll
+0x6b5f0000 - 0x6b696000 	C:\Users\smoral\Development\javacv-windows-x86\com\googlecode\javacv\cpp\windows-x86\opencv_objdetect245.dll
+0x6c9d0000 - 0x6ca3e000 	C:\Users\smoral\Development\javacv-windows-x86\com\googlecode\javacv\cpp\windows-x86\opencv_gpu245.dll
+0x69dd0000 - 0x69e30000 	C:\Users\smoral\Development\javacv-windows-x86\com\googlecode\javacv\cpp\windows-x86\opencv_video245.dll
+0x74de0000 - 0x74dee000 	C:\Users\smoral\AppData\Local\Temp\javacpp24819801109740\jniopencv_nonfree.dll
+0x6c030000 - 0x6c046000 	C:\Users\smoral\AppData\Local\Temp\javacpp24819801109740\jniopencv_video.dll
+0x65700000 - 0x65780000 	C:\Users\smoral\Development\javacv-windows-x86\com\googlecode\javacv\cpp\windows-x86\opencv_ml245.dll
+0x69d80000 - 0x69dc8000 	C:\Users\smoral\AppData\Local\Temp\javacpp24819801109740\jniopencv_ml.dll
+0x655c0000 - 0x656f3000 	C:\Users\smoral\Development\javacv-windows-x86\com\googlecode\javacv\cpp\windows-x86\opencv_legacy245.dll
+0x64c70000 - 0x64d07000 	C:\Users\smoral\AppData\Local\Temp\javacpp24819801109740\jniopencv_legacy.dll
+0x69c50000 - 0x69c8a000 	C:\Users\smoral\AppData\Local\Temp\javacpp24819801109740\jniopencv_objdetect.dll
+0x5e4b0000 - 0x5e5d1000 	C:\Users\smoral\Development\javacv-windows-x86\com\googlecode\javacv\cpp\windows-x86\opencv_contrib245.dll
+0x662a0000 - 0x662e5000 	C:\Users\smoral\AppData\Local\Temp\javacpp24819801109740\jniopencv_contrib.dll
+
+VM Arguments:
+jvm_args: -Dfile.encoding=Cp1252 
+java_command: mauroponce.pfi.tests.RecognitionTest
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=C:\Program Files (x86)\Java\jdk1.6.0_21
+CLASSPATH=C:\Program Files\Java\jdk1.6.0_24\src.zip;C:\Users\smoral\UADE\5to Año\Tesis\PFI-ConMauro\javacv-0.5-bin\javacv-bin\*;C:\Users\smoral\UADE\5to Año\Tesis\PFI-ConMauro\javacv-0.5-cppjars\javacv-cppjars\*;
+PATH=C:/Program Files (x86)/Java/jre7/bin/client;C:/Program Files (x86)/Java/jre7/bin;C:/Program Files (x86)/Java/jre7/lib/i386;C:\Program Files\Common Files\Microsoft Shared\Windows Live;C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Windows Live\Shared;C:\Program Files\Microsoft Windows Performance Toolkit\;C:\Program Files\Java\jdk1.6.0_24\bin;c:\Program Files (x86)\Microsoft SQL Server\100\Tools\Binn\;c:\Program Files\Microsoft SQL Server\100\Tools\Binn\;c:\Program Files\Microsoft SQL Server\100\DTS\Binn\;c:\Program Files (x86)\Microsoft SQL Server\100\Tools\Binn\VSShell\Common7\IDE\;c:\Program Files (x86)\Microsoft SQL Server\100\DTS\Binn\;C:\Program Files\TortoiseSVN\bin;C:\Users\smoral\Development\opencv\build\x86\vc10\bin;C:\Users\smoral\Development\opencv\build\common\tbb\ia32\vc10;C:\Users\smoral\Development\javacv-windows-x86\com\googlecode\javacv\cpp\windows-x86;C:\grails-2.0.3\bin;C:\Users\smoral\UADE\5to Año\Tesis\PFI-ConMauro\javacv-0.5-bin\javacv-bin\javacpp.jar;C:\Users\smoral\UADE\5to Año\Tesis\PFI-ConMauro\javacv-0.5-bin\javacv-bin\javacv.jar;C:\Users\smoral\UADE\5to Año\Tesis\PFI-ConMauro\javacv-0.5-bin\javacv-bin\javacv-*.jar;C:\Users\smoral\UADE\5to Año\Tesis\PFI-ConMauro\javacv-0.5-cppjars\javacv-cppjars\opencv-2.4.5*.jar;C:\Program Files\TortoiseGit\bin;C:\springsource\sts-2.9.1.RELEASE;
+USERNAME=smoral
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 37 Stepping 5, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 7 Build 7601 Service Pack 1
+
+CPU:total 4 (8 cores per cpu, 2 threads per core) family 6 model 37 stepping 5, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, ht
+
+Memory: 4k page, physical 3987312k(829624k free), swap 7972760k(3647772k free)
+
+vm_info: Java HotSpot(TM) Client VM (17.0-b17) for windows-x86 JRE (1.6.0_21-b07), built on Jul 17 2010 01:10:15 by "java_re" with MS VC++ 7.1 (VS2003)
+
+time: Thu Mar 06 01:51:03 2014
+elapsed time: 3 seconds
+
