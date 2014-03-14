@@ -12,6 +12,7 @@
 	<classpathentry kind="lib" path="lib/javacv.jar"/>
 	<classpathentry kind="lib" path="lib/joda-time-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/postgresql-8.3-606.jdbc4.jar"/>
+	<classpathentry kind="lib" path="lib/opencv-2.4.5-windows-x86.jar"/>
 	<classpathentry kind="src" path=".link_to_grails_plugins/hibernate-2.0.3/grails-app/i18n">
 		<attributes>
 			<attribute name="com.springsource.sts.grails.core.SOURCE_FOLDER" value="true"/>

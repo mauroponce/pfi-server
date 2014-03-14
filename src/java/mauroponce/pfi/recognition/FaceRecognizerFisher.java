@@ -82,9 +82,11 @@ public class FaceRecognizerFisher {
         cvCvtColor(testImage, greyTestImage, CV_BGR2GRAY);
         greyTestImage = ImageUtils.resizeImage(greyTestImage, 200, 200);
 
-        predictedLabel = faceRecognizer.predict(greyTestImage);
+        int[] labelsPredicted = new int[3];
+		double[] arg2 = new double[3];
+		faceRecognizer.predict(greyTestImage, labelsPredicted, arg2);
 
-        System.out.println("Predicted label: " + labelsStrings[predictedLabel]);
+        System.out.println("Predicted label: " + labelsStrings[labelsPredicted[0]]);
     }
 }
 
