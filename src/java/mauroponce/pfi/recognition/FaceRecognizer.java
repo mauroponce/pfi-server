@@ -74,6 +74,8 @@ public class FaceRecognizer {
 	CvMat trainPersonNumMat;
 
 	public void learn(final String courseFolder){
+		//Call garbage collector to release file facesdata.xml, cvReleaseFileStorage does not work
+		System.gc();
 		trainingFaceImgArr = loadFaceImgArrayFromImagesFolders(courseFolder);
 		nTrainFaces = trainingFaceImgArr.length;
 		if (nTrainFaces < 3) {//Se necesitan al menos 3 imagenes de entrenamiento
@@ -104,6 +106,7 @@ public class FaceRecognizer {
 		}
 		storeTrainingData();
 		storeEigenfaceImages();
+		System.gc();
 	}	
 	
 	private IplImage[] loadFaceImgArrayFromImagesFolders(
