@@ -1,5 +1,7 @@
 package mauroponce.pfi.tests;
 
+import java.util.ArrayList;
+
 import mauroponce.pfi.recognition.*;
 
 public class RecognitionTest {
@@ -9,15 +11,20 @@ public class RecognitionTest {
 	
 	public static void main(String[] args) {
 		int k = 3;//number of nearest neighbors
-		FaceRecognizer recognitionService = new FaceRecognizer();
+		String courseFolderName = "course_1";
 //		String [] imagesFolders = {"131445", "131900", "131455", "131431"};
-		String courseFolderName = "course_4";
+		
+		System.out.println("----------------------- EIGEN FACES ------------------------");
+		IFaceRecognizer recognitionService = new FaceRecognizerEigen();
 		recognitionService.learn(courseFolderName);
-		recognitionService.recognize(testImagePath, k);
+		ArrayList<Integer> recognizeEigen = recognitionService.recognize(testImagePath, k);
+		System.out.println("Recognized: "+recognizeEigen.get(0));
+		
 		
 		System.out.println("----------------------- FISHER FACES ------------------------");
-		
 		FaceRecognizerFisher faceRecognizerFisher = new FaceRecognizerFisher();
-		faceRecognizerFisher.fisherFacesRecognition(courseFolderName, testImagePath);
+		faceRecognizerFisher.learn(courseFolderName);
+		ArrayList<Integer> recognizeFisher = faceRecognizerFisher.recognize(testImagePath, k);
+		System.out.println("Recognized: "+recognizeFisher.get(0));
 	}	
 }

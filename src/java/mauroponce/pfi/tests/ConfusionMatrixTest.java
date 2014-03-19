@@ -1,13 +1,13 @@
 package mauroponce.pfi.tests;
 
 import java.io.File;
-import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mauroponce.pfi.recognition.FaceRecognizer;
+import mauroponce.pfi.recognition.FaceRecognizerEigen;
+import mauroponce.pfi.recognition.IFaceRecognizer;
 import mauroponce.pfi.utils.AppConstants;
 
 public class ConfusionMatrixTest {
@@ -16,7 +16,7 @@ public class ConfusionMatrixTest {
 	private static Map<Integer, Integer> lusActualCount;
 	private static Integer[][] confusionMatriz;
 	private static Integer[][] confusionMatrizKNearest;
-	private static FaceRecognizer recognitionService;
+	private static IFaceRecognizer recognitionService;
 	private static Integer LEARNING_IMAGES_COUNT = 3;
 	
 	/**
@@ -25,6 +25,7 @@ public class ConfusionMatrixTest {
 	public static void main(String[] args) {		
 		String recognitionCourseFolder = "a_reconocer";
 		Integer k = getStudentsCount(recognitionCourseFolder);
+		recognitionService = new FaceRecognizerEigen();
 		for (int t = 1; t <= LEARNING_IMAGES_COUNT; t++) {
 			processFolders(t, recognitionCourseFolder, k);			
 		}
@@ -39,7 +40,7 @@ public class ConfusionMatrixTest {
 
 	private static void processFolders(Integer t,
 			String recognitionCourseFolder, Integer k) {
-		recognitionService = new FaceRecognizer();
+//		recognitionService = new FaceRecognizer();
 		recognitionService.learn("course_"+t);
 		System.out.println("<table><tr><td colspan='"+(k+1)+"'>PRUEBA T = "+t+"</td></tr></table>");
 		for (int i = 1; i <= k; i++) {
@@ -108,7 +109,7 @@ public class ConfusionMatrixTest {
 	}
 
 	private static void createConfusionMatriz(String recognitionCourseFolder, Integer k) {
-		recognitionService = new FaceRecognizer();
+//		recognitionService = new FaceRecognizer();
 		 lusIndex = new HashMap<Integer, Integer>();
 		 lusActualCount = new HashMap<Integer, Integer>();
 		 File courseFolder = new File(AppConstants.TRAINING_IMAGES_ROOT_FOLDER + "/" + recognitionCourseFolder);

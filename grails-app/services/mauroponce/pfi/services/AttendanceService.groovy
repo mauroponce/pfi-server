@@ -11,7 +11,7 @@ import javax.persistence.Query;
 import mauroponce.pfi.domain.Attendance;
 import mauroponce.pfi.domain.Course;
 import mauroponce.pfi.domain.Student;
-import mauroponce.pfi.recognition.FaceRecognizer;
+import mauroponce.pfi.recognition.FaceRecognizerEigen;
 import mauroponce.pfi.utils.AppConstants;
 import mauroponce.pfi.utils.FileUtils;
 
@@ -44,7 +44,7 @@ class AttendanceService {
 			luArray[i] = s.getLU().toString();
 			i++;
 		}
-		FaceRecognizer recognitionService = new FaceRecognizer();
+		FaceRecognizerEigen recognitionService = new FaceRecognizerEigen();
 		System.out.println("Students: " + course.getStudents().size());
 		return recognitionService.getFacesData("course_"+course.getCourseNumber());
 	}
