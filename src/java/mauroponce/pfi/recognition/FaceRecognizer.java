@@ -79,7 +79,8 @@ public abstract class FaceRecognizer implements IFaceRecognizer {
 			}
 	
 			personNames.clear(); // Make sure it starts as empty.
-	
+			personNamesWithRepetitions.clear();
+			
 			for(File imageFolderFile : imageFolderFiles){
 				int personNumber = 0;
 				if(imageFolderFile.isDirectory()){

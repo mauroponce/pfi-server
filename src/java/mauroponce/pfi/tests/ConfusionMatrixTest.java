@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mauroponce.pfi.recognition.FaceRecognizerEigen;
+import mauroponce.pfi.recognition.FaceRecognizerFisher;
 import mauroponce.pfi.recognition.IFaceRecognizer;
 import mauroponce.pfi.utils.AppConstants;
 
@@ -25,7 +25,7 @@ public class ConfusionMatrixTest {
 	public static void main(String[] args) {		
 		String recognitionCourseFolder = "a_reconocer";
 		Integer k = getStudentsCount(recognitionCourseFolder);
-		recognitionService = new FaceRecognizerEigen();
+		recognitionService = new FaceRecognizerFisher();
 		for (int t = 1; t <= LEARNING_IMAGES_COUNT; t++) {
 			processFolders(t, recognitionCourseFolder, k);			
 		}

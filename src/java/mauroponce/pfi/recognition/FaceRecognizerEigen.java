@@ -362,6 +362,16 @@ public class FaceRecognizerEigen extends FaceRecognizer {
 			// System.out.println("Index: " + indexDistance.getIndex()
 					//+ ", Distance: " + indexDistance.getDistance());
 		}
+		nNearestIndexes = getKNearestIndexes(k, indexDistances);
+		float pConfidence = (float) (1.0f - Math.sqrt(leastDistSq
+				/ (float) (nTrainFaces * nEigens)) / 255.0f);
+		pConfidencePointer.put(pConfidence);
+		
+		return nNearestIndexes;
+	}
+
+	private int[] getKNearestIndexes(int k, Set<IndexDistance> indexDistances) {
+		int [] nNearestIndexes = new int[k];
 		int j = 0;
 		for(Iterator<IndexDistance> it = indexDistances.iterator(); it.hasNext() && j < k; j++){
 			boolean luWasAdded = false;
@@ -378,10 +388,6 @@ public class FaceRecognizerEigen extends FaceRecognizer {
 				j--;
 			}
 		}
-		float pConfidence = (float) (1.0f - Math.sqrt(leastDistSq
-				/ (float) (nTrainFaces * nEigens)) / 255.0f);
-		pConfidencePointer.put(pConfidence);
-		
 		return nNearestIndexes;
 	}
 	
