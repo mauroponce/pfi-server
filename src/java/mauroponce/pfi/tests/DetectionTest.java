@@ -18,12 +18,21 @@ public class DetectionTest {
 		
 		for (File studentFolder : fotosFolder.listFiles()) {
 			if (studentFolder.isDirectory()){
-				for (File studentImg : studentFolder.listFiles()) {
-					if (!studentImg.isDirectory()){
-						if(studentImg.getName().equals("95.jpg")||studentImg.getName().equals("96.jpg")){
-							FaceDetection.detectMultipleFaces(studentImg.getAbsolutePath(),
-									"haarcascade_frontalface_alt.xml",
-									studentFolder.getAbsolutePath() + "/detected/" + "detected_"+new Date().getTime()); 
+				if (studentFolder.getName().equals("130023")){
+					String detectedStudentFolder = studentFolder.getAbsolutePath().replace("fotos", "fotos_a_agregar")+File.separator;
+					File dir = new File(detectedStudentFolder);
+					if (!dir.exists()){
+						dir.mkdir();
+					}
+					for (File studentImg : studentFolder.listFiles()) {
+						if (!studentImg.isDirectory()){
+	//						if(studentImg.getName().equals("95.jpg")||studentImg.getName().equals("96.jpg")){
+								
+								FaceDetection.detectOneFace(studentImg.getAbsolutePath(),
+										"haarcascade_frontalface_alt.xml",
+										detectedStudentFolder + "detected_" + new Date().getTime() + ".jpg"); 
+	//						}
+								
 						}
 					}
 				}

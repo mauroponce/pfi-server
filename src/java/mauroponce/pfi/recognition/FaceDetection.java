@@ -7,10 +7,10 @@ import static com.googlecode.javacv.cpp.opencv_highgui.cvLoadImage;
 import static com.googlecode.javacv.cpp.opencv_highgui.cvSaveImage;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_BGR2GRAY;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvCvtColor;
-import static com.googlecode.javacv.cpp.opencv_objdetect.cvHaarDetectObjects;
-import static com.googlecode.javacv.cpp.opencv_objdetect.CV_HAAR_FIND_BIGGEST_OBJECT;
 import static com.googlecode.javacv.cpp.opencv_objdetect.CV_HAAR_DO_ROUGH_SEARCH;
-
+import static com.googlecode.javacv.cpp.opencv_objdetect.CV_HAAR_FIND_BIGGEST_OBJECT;
+import static com.googlecode.javacv.cpp.opencv_objdetect.cvHaarDetectObjects;
+import mauroponce.pfi.utils.AppConstants;
 import mauroponce.pfi.utils.ImageUtils;
 
 import com.googlecode.javacv.cpp.opencv_core.CvMemStorage;
@@ -80,6 +80,13 @@ public class FaceDetection {
 
 		// Load the original image.
 		IplImage originalImage = cvLoadImage(fileInputPath,1);
+		
+		// Change image resolution to improve velocity
+		if (originalImage.width() > 500){
+			int newWidth = originalImage.width()*50/100;
+			int newHeight = originalImage.height()*50/100;
+			originalImage = ImageUtils.resizeImage(originalImage,newWidth,newHeight);
+		}
 
 		// We need a grayscale image in order to do the recognition, so we
 		// create a new image of the same size as the original one.
@@ -115,7 +122,7 @@ public class FaceDetection {
 			
 			// Save cropped image to a new file.
 //			cvSaveImage(fileOutputPath+i+".jpg", imageCropped);
-			IplImage imageResized = ImageUtils.resizeImage(imageCropped,103,106); 
+			IplImage imageResized = ImageUtils.resizeImage(imageCropped,AppConstants.IMAGE_FACE_WIDTH,AppConstants.IMAGE_FACE_HEIGHT); 
 			// Save resized image to a new file.
 			
 			cvSaveImage(fileOutputPath, imageResized);

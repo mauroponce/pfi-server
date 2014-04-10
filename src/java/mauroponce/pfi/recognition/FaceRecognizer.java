@@ -4,6 +4,7 @@ import static com.googlecode.javacv.cpp.opencv_core.CV_32SC1;
 import static com.googlecode.javacv.cpp.opencv_core.cvCreateMat;
 import static com.googlecode.javacv.cpp.opencv_highgui.CV_LOAD_IMAGE_GRAYSCALE;
 import static com.googlecode.javacv.cpp.opencv_highgui.cvLoadImage;
+import static com.googlecode.javacv.cpp.opencv_highgui.cvSaveImage;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvEqualizeHist;
 
 import java.io.File;
@@ -83,7 +84,7 @@ public abstract class FaceRecognizer implements IFaceRecognizer {
 			
 			for(File imageFolderFile : imageFolderFiles){
 				int personNumber = 0;
-				if(imageFolderFile.isDirectory()){
+				if(imageFolderFile.isDirectory() && !imageFolderFile.getName().contains("resized")){
 					nPersons++;
 					String personName = imageFolderFile.getName();
 					personNumber = Integer.valueOf(personName);
@@ -94,10 +95,11 @@ public abstract class FaceRecognizer implements IFaceRecognizer {
 						String imgFilePath = imgFile.getAbsolutePath();
 						personNumTruthMat.put(0, iFace, personNumber);
 						
-						String imgDetectedFilePath = imageFolderFile.getAbsolutePath()+File.pathSeparator+"detected"+imgFile.getName();
+						String studentFolder = imageFolderFile.getAbsolutePath();
+						String imgDetectedFilePath = studentFolder+File.pathSeparator+"detected"+imgFile.getName();
 						if (imgFile.getName().contains("UADE")){
 							// the image is from UADE, we must to detect the face and then delete it
-							imgDetectedFilePath = imageFolderFile.getAbsolutePath()+File.pathSeparator+"detected"+imgFile.getName();
+							imgDetectedFilePath = studentFolder+File.pathSeparator+"detected"+imgFile.getName();
 							FaceDetection.detectOneFace(imgFilePath, null, imgDetectedFilePath);
 						}else{
 							imgDetectedFilePath = imgFilePath;				
@@ -115,15 +117,18 @@ public abstract class FaceRecognizer implements IFaceRecognizer {
 							height = faceDetectedImage.height();
 						} else if (faceDetectedImage.width() != width
 								|| faceDetectedImage.height() != height) {
-							faceDetectedImage = ImageUtils.resizeImage(faceDetectedImage, 200, 200);
+							faceDetectedImage = ImageUtils.resizeImage(faceDetectedImage, AppConstants.IMAGE_FACE_WIDTH, AppConstants.IMAGE_FACE_HEIGHT);
 	//						throw new RuntimeException("wrong size face in "
 	//								+ imgFilename + "\nwanted " + width + "x"
 	//								+ height + ", but found " + faceImage.width()
 	//								+ "x" + faceImage.height());
 						}
-						faceDetectedImage = ImageUtils.resizeImage(faceDetectedImage, 200, 200);
-						// Give the image a standard brightness and contrast.
-						cvEqualizeHist(faceDetectedImage, faceDetectedImage);
+						
+						/* esto es para pasarles las imagenes en 64 x 64 a pablo */
+						String cropedStudentFolder = imgFile.getAbsolutePath().replace("course", "crop_course");
+						
+						faceDetectedImage = preapareImageAndSaveToTestFolder(faceDetectedImage,
+								cropedStudentFolder);
 						
 						faceImgArr[iFace] = faceDetectedImage;
 						iFace++;
@@ -215,16 +220,34 @@ public abstract class FaceRecognizer implements IFaceRecognizer {
 			throw new RuntimeException("wrong size face in " + imagePath
 					+ "\nwanted " + width + "x" + height + ", but found "
 					+ faceImage.width() + "x" + faceImage.height());
-		}
+		}		
+
+		String cropedStudentFolder = imagePath.replace("a_reconocer", "crop_a_reconocer");
 		
-		faceImage = ImageUtils.resizeImage(faceImage, 200, 200);
-		
-		// Give the image a standard brightness and contrast.
-		cvEqualizeHist(faceImage, faceImage);
+		faceImage = preapareImageAndSaveToTestFolder(faceImage,
+				cropedStudentFolder);
 		
 		faceImgArr[iFace] = faceImage;
 		iFace++;		
 		return faceImgArr;
+	}
+
+	private IplImage preapareImageAndSaveToTestFolder(IplImage faceImage,
+			String cropedStudentFolder) {
+		faceImage = ImageUtils.resizeImage(faceImage, AppConstants.IMAGE_FACE_WIDTH, AppConstants.IMAGE_FACE_HEIGHT);
+
+		// Give the image a standard brightness and contrast.
+		cvEqualizeHist(faceImage, faceImage);
+		
+		
+		File imageFile = new File(cropedStudentFolder);
+		File parentFile = imageFile.getParentFile();
+		if (!parentFile.exists()){
+			parentFile.mkdir();
+		}
+		
+		cvSaveImage(cropedStudentFolder, faceImage);
+		return faceImage;
 	}
 
 }

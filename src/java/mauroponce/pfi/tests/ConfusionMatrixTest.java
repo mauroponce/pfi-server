@@ -1,14 +1,16 @@
 package mauroponce.pfi.tests;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mauroponce.pfi.recognition.FaceRecognizerFisher;
+import mauroponce.pfi.recognition.FaceRecognizerEigen;
 import mauroponce.pfi.recognition.IFaceRecognizer;
 import mauroponce.pfi.utils.AppConstants;
+import mauroponce.pfi.utils.FileUtils;
 
 public class ConfusionMatrixTest {
 
@@ -18,16 +20,25 @@ public class ConfusionMatrixTest {
 	private static Integer[][] confusionMatrizKNearest;
 	private static IFaceRecognizer recognitionService;
 	private static Integer LEARNING_IMAGES_COUNT = 3;
+	private static StringBuffer result;
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {		
+		result = new StringBuffer();
 		String recognitionCourseFolder = "a_reconocer";
 		Integer k = getStudentsCount(recognitionCourseFolder);
-		recognitionService = new FaceRecognizerFisher();
+		recognitionService = new FaceRecognizerEigen();
 		for (int t = 1; t <= LEARNING_IMAGES_COUNT; t++) {
+			System.out.println("T = "+t);
 			processFolders(t, recognitionCourseFolder, k);			
+		}
+		try {
+			FileUtils.writeToFile("C:/Users/smoral/Documents/PFI/faces/result.xls", result);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -42,70 +53,72 @@ public class ConfusionMatrixTest {
 			String recognitionCourseFolder, Integer k) {
 //		recognitionService = new FaceRecognizer();
 		recognitionService.learn("course_"+t);
-		System.out.println("<table><tr><td colspan='"+(k+1)+"'>PRUEBA T = "+t+"</td></tr></table>");
+		result.append("<table><tr><td colspan='"+(k+1)+"'>PRUEBA T = "+t+"</td></tr></table>"+"\n");
 		for (int i = 1; i <= k; i++) {
+			System.out.println("------- K = "+i);
 			createConfusionMatriz(recognitionCourseFolder, i);
-			System.out.println("<table><tr><td colspan='"+(k+1)+"'>--- Matriz de Confusion "+i+" mas cercanos---</td></tr></table>");
+			result.append("<table><tr><td colspan='"+(k+1)+"'>--- Matriz de Confusion "+i+" mas cercanos---</td></tr></table>"+"\n");
 			printConfusionMatriz(confusionMatrizKNearest);
-			System.out.println("<table><tr><td colspan='"+(k+1)+"'>--- Matriz de Confusion Porcentual "+i+" mas cercanos---</td></tr></table>");
+			result.append("<table><tr><td colspan='"+(k+1)+"'>--- Matriz de Confusion Porcentual "+i+" mas cercanos---</td></tr></table>"+"\n");
 			printProcentualConfusionMatriz(confusionMatrizKNearest, k);			
 		}
 	}
 
 	private static void printConfusionMatriz(Integer[][] matriz) {
-		System.out.println("<table>");
-		System.out.println("<tr>");
-		System.out.println("<td>&nbsp;</td>");			
+		result.append("<table>"+"\n");
+		result.append("<tr>"+"\n");
+		result.append("<td>&nbsp;</td>"+"\n");			
 		for (Integer lu : lusIndex.keySet()) {
-			System.out.print("<td>"+lu+"</td>");			
+			result.append("<td>"+lu+"</td>");			
 		}		
-		System.out.println("</tr>");	
+		result.append("</tr>"+"\n");	
 		for (Integer luActual : lusIndex.keySet()) {
-			System.out.println("<tr>");
+			result.append("<tr>"+"\n");
 			Integer luActualIndex = lusIndex.get(luActual);
-			System.out.print("<td>"+luActual+"</td>");
+			result.append("<td>"+luActual+"</td>");
 			for (Integer luPredicted : lusIndex.keySet()) {
 				Integer luPredictedIndex = lusIndex.get(luPredicted);
 				Integer luPredictedCount = matriz[luActualIndex][luPredictedIndex];
-				System.out.print("<td>"+luPredictedCount+"</td>");
+				result.append("<td>"+luPredictedCount+"</td>");
 //				System.out.format("|%5s   ",luPredictedCount);
 			}
-			System.out.println("</tr>");		
+			result.append("</tr>"+"\n");		
 		}
-		System.out.println("</table>");
+		result.append("</table>"+"\n");
 	}
 	
 	private static void printProcentualConfusionMatriz(Integer[][] matriz, Integer k) {
-		System.out.println("<table>");
-		System.out.println("<tr>");
-		System.out.println("<td>&nbsp;</td>");			
+		result.append("<table>"+"\n");
+		result.append("<tr>"+"\n");
+		result.append("<td>&nbsp;</td>"+"\n");			
 		for (Integer lu : lusIndex.keySet()) {
-			System.out.print("<td>"+lu+"</td>");			
+			result.append("<td>"+lu+"</td>");			
 		}		
-		System.out.println("</tr>");	
+		result.append("</tr>"+"\n");	
 		float performance = 0;
 		for (Integer luActual : lusIndex.keySet()) {
-			System.out.println("<tr>");
+			result.append("<tr>"+"\n");
 			Integer luActualIndex = lusIndex.get(luActual);
-			System.out.print("<td>"+luActual+"</td>");
+			result.append("<td>"+luActual+"</td>");
 			Integer luActualCount = lusActualCount.get(luActual);
 			for (Integer luPredicted : lusIndex.keySet()) {
 				Integer luPredictedIndex = lusIndex.get(luPredicted);
 				Integer luPredictedCount = matriz[luActualIndex][luPredictedIndex];
 				float percentFloat = luPredictedCount/(float)luActualCount*100;
 				String porcentString = new DecimalFormat("#").format(percentFloat);
-				System.out.print("<td>"+porcentString+"</td>");
+				result.append("<td>"+porcentString+"</td>");
 //				System.out.format("|%5s%%  ",porcentString);
 				if (luActual == luPredicted){
 					performance += percentFloat;
 				}
 			}
-			System.out.println("</tr>");	
+			result.append("</tr>"+"\n");	
 		}		
-		System.out.println("</table>");
+		result.append("</table>"+"\n");
 		performance = performance/lusIndex.keySet().size();
-		System.out.println("<table><tr><td colspan='"+(k+1)+"'>Performance: "+new DecimalFormat("#").format(performance)+"</td></tr></table>");
-//		System.out.println("Performance: "+new DecimalFormat("#").format(performance));
+		result.append("<table><tr><td colspan='"+(k+1)+"'>Performance: "+new DecimalFormat("#").format(performance)+"</td></tr></table>"+"\n");
+		System.out.println("------- Performance = "+new DecimalFormat("#").format(performance));
+//		result.appendln("Performance: "+new DecimalFormat("#").format(performance));
 	}
 
 	private static void createConfusionMatriz(String recognitionCourseFolder, Integer k) {

@@ -5,10 +5,12 @@ import static com.googlecode.javacv.cpp.opencv_core.cvCreateImage;
 import static com.googlecode.javacv.cpp.opencv_core.cvMinMaxLoc;
 import static com.googlecode.javacv.cpp.opencv_core.cvSize;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -41,7 +43,14 @@ public class FileUtils {
 			}
 		}
 		return returnString;
-	}
+	}  
+	
+    public static void writeToFile(String pFilename, StringBuffer pData) throws IOException {  
+        BufferedWriter out = new BufferedWriter(new FileWriter(pFilename));  
+        out.write(pData.toString());  
+        out.flush();  
+        out.close();  
+    }  
 	
 	public static String encodeFileBase64(String inputPath){
 		File file = new File(inputPath);
