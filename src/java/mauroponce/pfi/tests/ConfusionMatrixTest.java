@@ -3,17 +3,24 @@ package mauroponce.pfi.tests;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import mauroponce.pfi.recognition.FaceRecognizerEigen;
 import mauroponce.pfi.recognition.IFaceRecognizer;
 import mauroponce.pfi.utils.AppConstants;
 import mauroponce.pfi.utils.FileUtils;
 
+import org.apache.commons.collections.MultiHashMap;
+import org.apache.commons.collections.MultiMap;
+
+@SuppressWarnings("deprecation")
 public class ConfusionMatrixTest {
 
+	private static final String RESULT_FILENAME = AppConstants.TRAINING_IMAGES_ROOT_FOLDER+File.separator+"result.xls";
 	private static Map<Integer, Integer> lusIndex;
 	private static Map<Integer, Integer> lusActualCount;
 	private static Integer[][] confusionMatriz;
@@ -21,25 +28,26 @@ public class ConfusionMatrixTest {
 	private static IFaceRecognizer recognitionService;
 	private static Integer LEARNING_IMAGES_COUNT = 3;
 	private static StringBuffer result;
+	private static MultiMap recognizedStudents;
+	private static Integer studentsCount;
 	
 	/**
 	 * @param args
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) {		
+	public static void main(String[] args) throws IOException {		
 		result = new StringBuffer();
 		String recognitionCourseFolder = "a_reconocer";
-		Integer k = getStudentsCount(recognitionCourseFolder);
-		recognitionService = new FaceRecognizerEigen();
+		studentsCount = getStudentsCount(recognitionCourseFolder);
+		createLUIndexes(recognitionCourseFolder);
+		FileUtils.writeToFile(RESULT_FILENAME, new StringBuffer(""));
 		for (int t = 1; t <= LEARNING_IMAGES_COUNT; t++) {
+			recognitionService = new FaceRecognizerEigen();
 			System.out.println("T = "+t);
-			processFolders(t, recognitionCourseFolder, k);			
+			processFolders(t, recognitionCourseFolder, studentsCount);		
+			System.out.println();		
 		}
-		try {
-			FileUtils.writeToFile("C:/Users/smoral/Documents/PFI/faces/result.xls", result);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		FileUtils.writeToFile(RESULT_FILENAME, result);
 	}
 
 	private static Integer getStudentsCount(String recognitionCourseFolder) {
@@ -50,17 +58,20 @@ public class ConfusionMatrixTest {
 	}
 
 	private static void processFolders(Integer t,
-			String recognitionCourseFolder, Integer k) {
+			String recognitionCourseFolder, Integer k) throws IOException {
 //		recognitionService = new FaceRecognizer();
 		recognitionService.learn("course_"+t);
+		recognizeStudents(recognitionCourseFolder);
 		result.append("<table><tr><td colspan='"+(k+1)+"'>PRUEBA T = "+t+"</td></tr></table>"+"\n");
 		for (int i = 1; i <= k; i++) {
-			System.out.println("------- K = "+i);
+//			System.out.println("Result length = " + result.toString().getBytes().length / 1024);
+//			FileUtils.appendToFile(RESULT_FILENAME, result);
+//			result = new StringBuffer();
 			createConfusionMatriz(recognitionCourseFolder, i);
 			result.append("<table><tr><td colspan='"+(k+1)+"'>--- Matriz de Confusion "+i+" mas cercanos---</td></tr></table>"+"\n");
 			printConfusionMatriz(confusionMatrizKNearest);
 			result.append("<table><tr><td colspan='"+(k+1)+"'>--- Matriz de Confusion Porcentual "+i+" mas cercanos---</td></tr></table>"+"\n");
-			printProcentualConfusionMatriz(confusionMatrizKNearest, k);			
+			printProcentualConfusionMatriz(confusionMatrizKNearest, k, i);
 		}
 	}
 
@@ -87,7 +98,7 @@ public class ConfusionMatrixTest {
 		result.append("</table>"+"\n");
 	}
 	
-	private static void printProcentualConfusionMatriz(Integer[][] matriz, Integer k) {
+	private static void printProcentualConfusionMatriz(Integer[][] matriz, Integer k, int i) {
 		result.append("<table>"+"\n");
 		result.append("<tr>"+"\n");
 		result.append("<td>&nbsp;</td>"+"\n");			
@@ -117,17 +128,16 @@ public class ConfusionMatrixTest {
 		result.append("</table>"+"\n");
 		performance = performance/lusIndex.keySet().size();
 		result.append("<table><tr><td colspan='"+(k+1)+"'>Performance: "+new DecimalFormat("#").format(performance)+"</td></tr></table>"+"\n");
-		System.out.println("------- Performance = "+new DecimalFormat("#").format(performance));
+
+		if (i<=5){
+			System.out.println("Resultado con K="+i+" mas cercanos: "+new DecimalFormat("#").format(performance));
+		}
 //		result.appendln("Performance: "+new DecimalFormat("#").format(performance));
 	}
 
-	private static void createConfusionMatriz(String recognitionCourseFolder, Integer k) {
-//		recognitionService = new FaceRecognizer();
+	private static void createLUIndexes(String recognitionCourseFolder) {
 		 lusIndex = new HashMap<Integer, Integer>();
-		 lusActualCount = new HashMap<Integer, Integer>();
 		 File courseFolder = new File(AppConstants.TRAINING_IMAGES_ROOT_FOLDER + "/" + recognitionCourseFolder);
-		 int luLength = courseFolder.listFiles().length;
-		 initializeConfusionMatriz(luLength);
 		 
 		 /**
 		  * First gets all the lus and assign an index to them
@@ -138,33 +148,53 @@ public class ConfusionMatrixTest {
 			lusIndex.put(luActual,index);			
 			index++;
 		 }
-		 
+	}
+
+	private static void recognizeStudents(String recognitionCourseFolder) {
+		 File courseFolder = new File(AppConstants.TRAINING_IMAGES_ROOT_FOLDER + "/" + recognitionCourseFolder);
+		 recognizedStudents = new MultiHashMap();
 		 for (File studentFolder : courseFolder.listFiles()) {
 			 Integer luActual = Integer.parseInt(studentFolder.getName());
-			 Integer luActualIndex = lusIndex.get(luActual);
-			 Integer luActualCount = 0;
 			 for (File img : studentFolder.listFiles()) {
 				String[] nameParts = img.getName().split("_");
 				if (!"UADE".equals(nameParts[0])){
-					luActualCount++;
 					String imgPath = img.getAbsolutePath();
-					List<Integer> luNearest = recognitionService.recognize(imgPath, k);
+					List<Integer> luNearest = recognitionService.recognize(imgPath, studentsCount);
 					if (!luNearest.isEmpty()){
+						recognizedStudents.put(luActual, luNearest);
+					}
+				}
+			 }			
+		 }
+	}
+	
+	private static void createConfusionMatriz(String recognitionCourseFolder, Integer k) {
+//		recognitionService = new FaceRecognizer();
+		 lusActualCount = new HashMap<Integer, Integer>();
+		 File courseFolder = new File(AppConstants.TRAINING_IMAGES_ROOT_FOLDER + "/" + recognitionCourseFolder);
+		 int luLength = courseFolder.listFiles().length;
+		 initializeConfusionMatriz(luLength);
+		 for (Integer luActual : (Set<Integer>) recognizedStudents.keySet()) {
+			 Integer luActualIndex = lusIndex.get(luActual);
+			 Integer luActualCount = 0;
+			 for (List<Integer> recognitionList : (ArrayList<List<Integer>>) recognizedStudents.get(luActual)) {
+				List<Integer> luNearest = recognitionList.subList(0, k); 
+				luActualCount++;
+				if (!luNearest.isEmpty()){
 //						Integer luPredicted = luNearest.get(0);
 //						Integer LuPredictedIndex = lusIndex.get(luPredicted);
 //						//Add one in the confusion matriz for de actual and predicted index
 //						confusionMatriz[luActualIndex][LuPredictedIndex]++;
 
-						//add one to the nearest if luActual is not in the list
-						Integer luPredictedKIndex = lusIndex.get(luNearest.get(0));
-						for (Integer luPredictedK: luNearest) {
-							if (luPredictedK.equals(luActual)){
-								//Add one in the confusion matriz for the luActual
-								luPredictedKIndex = lusIndex.get(luPredictedK);
-							}
+					//add one to the nearest if luActual is not in the list
+					Integer luPredictedKIndex = lusIndex.get(luNearest.get(0));
+					for (Integer luPredictedK: luNearest) {
+						if (luPredictedK.equals(luActual)){
+							//Add one in the confusion matriz for the luActual
+							luPredictedKIndex = lusIndex.get(luPredictedK);
 						}
-						confusionMatrizKNearest[luActualIndex][luPredictedKIndex]++;							
 					}
+					confusionMatrizKNearest[luActualIndex][luPredictedKIndex]++;							
 				}
 			 }			
 			 lusActualCount.put(luActual,luActualCount);

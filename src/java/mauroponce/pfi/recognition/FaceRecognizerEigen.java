@@ -232,7 +232,7 @@ public class FaceRecognizerEigen extends FaceRecognizer {
 
 		for (i = 0; i < nTestFaces; i++) {
 			int nearest;
-
+//			System.out.println(testImagePath);
 			cvEigenDecomposite(testFaceImgArr[i], // obj
 					nEigens, // nEigObjs
 					new PointerPointer(eigenVectArr), // eigInput (Pointer)
@@ -240,7 +240,7 @@ public class FaceRecognizerEigen extends FaceRecognizer {
 					null, // userData
 					pAvgTrainImg, // avg
 					projectedTestFace); // coeffs
-
+			
 			final FloatPointer pConfidence = new FloatPointer(confidence);
 			int [] knn = getKNN(projectedTestFace, new FloatPointer(
 					pConfidence), k);
@@ -251,9 +251,9 @@ public class FaceRecognizerEigen extends FaceRecognizer {
 			for(int j = 0 ; j < knn.length; j++){
 				nearestsLus.add(knn[j]);
 			}
+			cvReleaseImage(testFaceImgArr[i]);
 			// System.out.println("Mas cercano: " + nearest);
 		}
-		
 		return nearestsLus; 
 	}
 

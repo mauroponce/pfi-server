@@ -51,6 +51,13 @@ public class FileUtils {
         out.flush();  
         out.close();  
     }  
+    
+    public static void appendToFile(String pFilename, StringBuffer pData) throws IOException {  
+    	BufferedWriter out = new BufferedWriter(new FileWriter(pFilename));  
+    	out.append(pData.toString());  
+    	out.flush();  
+    	out.close();  
+    }  
 	
 	public static String encodeFileBase64(String inputPath){
 		File file = new File(inputPath);

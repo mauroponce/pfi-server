@@ -4,12 +4,15 @@ import static com.googlecode.javacv.cpp.opencv_core.CV_32SC1;
 import static com.googlecode.javacv.cpp.opencv_core.cvCreateMat;
 import static com.googlecode.javacv.cpp.opencv_highgui.CV_LOAD_IMAGE_GRAYSCALE;
 import static com.googlecode.javacv.cpp.opencv_highgui.cvLoadImage;
-import static com.googlecode.javacv.cpp.opencv_highgui.cvSaveImage;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvEqualizeHist;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import mauroponce.pfi.utils.AppConstants;
 import mauroponce.pfi.utils.FileUtils;
@@ -246,7 +249,21 @@ public abstract class FaceRecognizer implements IFaceRecognizer {
 			parentFile.mkdir();
 		}
 		
-		cvSaveImage(cropedStudentFolder, faceImage);
+//		cvSaveImage(cropedStudentFolder, faceImage);
+
+		//Read the file to a BufferedImage  
+		BufferedImage image = faceImage.getBufferedImage(); 
+		
+		//Create a file for the output  
+		File output = new File(cropedStudentFolder.replace(".jpg", ".bmp"));  
+		  
+		//Write the image to the destination as a BMP  
+		try {
+			ImageIO.write(image, "bmp", output);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		
 		return faceImage;
 	}
 

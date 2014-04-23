@@ -1,7 +1,6 @@
 package mauroponce.pfi.tests;
 
 import java.io.File;
-import java.sql.Timestamp;
 import java.util.Date;
 
 import mauroponce.pfi.recognition.FaceDetection;
@@ -18,7 +17,8 @@ public class DetectionTest {
 		
 		for (File studentFolder : fotosFolder.listFiles()) {
 			if (studentFolder.isDirectory()){
-				if (studentFolder.getName().equals("130023")){
+				if (studentFolder.getName().equals("130032")
+						|| studentFolder.getName().equals("130032")){
 					String detectedStudentFolder = studentFolder.getAbsolutePath().replace("fotos", "fotos_a_agregar")+File.separator;
 					File dir = new File(detectedStudentFolder);
 					if (!dir.exists()){
@@ -26,12 +26,12 @@ public class DetectionTest {
 					}
 					for (File studentImg : studentFolder.listFiles()) {
 						if (!studentImg.isDirectory()){
-	//						if(studentImg.getName().equals("95.jpg")||studentImg.getName().equals("96.jpg")){
+//							if(studentImg.getName().equals("aaa.jpg")){
 								
 								FaceDetection.detectOneFace(studentImg.getAbsolutePath(),
 										"haarcascade_frontalface_alt.xml",
 										detectedStudentFolder + "detected_" + new Date().getTime() + ".jpg"); 
-	//						}
+//							}
 								
 						}
 					}
