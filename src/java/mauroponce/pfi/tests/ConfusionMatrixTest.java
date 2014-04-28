@@ -21,6 +21,7 @@ import org.apache.commons.collections.MultiMap;
 public class ConfusionMatrixTest {
 
 	private static final String RESULT_FILENAME = AppConstants.TRAINING_IMAGES_ROOT_FOLDER+File.separator+"result.xls";
+	private static final String PORCENT_FILENAME = AppConstants.TRAINING_IMAGES_ROOT_FOLDER+File.separator+"performance.csv";	
 	private static Map<Integer, Integer> lusIndex;
 	private static Map<Integer, Integer> lusActualCount;
 	private static Integer[][] confusionMatriz;
@@ -28,6 +29,7 @@ public class ConfusionMatrixTest {
 	private static IFaceRecognizer recognitionService;
 	private static Integer LEARNING_IMAGES_COUNT = 3;
 	private static StringBuffer result;
+	private static StringBuffer porcent;
 	private static MultiMap recognizedStudents;
 	private static Integer studentsCount;
 	
@@ -36,18 +38,23 @@ public class ConfusionMatrixTest {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {		
+		System.out.println(AppConstants.TRAINING_IMAGES_ROOT_FOLDER);
 		result = new StringBuffer();
+		porcent = new StringBuffer();
 		String recognitionCourseFolder = "a_reconocer";
 		studentsCount = getStudentsCount(recognitionCourseFolder);
 		createLUIndexes(recognitionCourseFolder);
 		FileUtils.writeToFile(RESULT_FILENAME, new StringBuffer(""));
+		FileUtils.writeToFile(PORCENT_FILENAME, new StringBuffer(""));
 		for (int t = 1; t <= LEARNING_IMAGES_COUNT; t++) {
 			recognitionService = new FaceRecognizerEigen();
 			System.out.println("T = "+t);
+			porcent.append("T = "+t+"\n");
 			processFolders(t, recognitionCourseFolder, studentsCount);		
 			System.out.println();		
 		}
 		FileUtils.writeToFile(RESULT_FILENAME, result);
+		FileUtils.writeToFile(PORCENT_FILENAME, porcent);
 	}
 
 	private static Integer getStudentsCount(String recognitionCourseFolder) {
@@ -127,11 +134,14 @@ public class ConfusionMatrixTest {
 		}		
 		result.append("</table>"+"\n");
 		performance = performance/lusIndex.keySet().size();
-		result.append("<table><tr><td colspan='"+(k+1)+"'>Performance: "+new DecimalFormat("#").format(performance)+"</td></tr></table>"+"\n");
+		String performanceFormated = new DecimalFormat("#").format(performance);
+		result.append("<table><tr><td colspan='"+(k+1)+"'>Performance: "+performanceFormated+"</td></tr></table>"+"\n");
 
 		if (i<=5){
-			System.out.println("Resultado con K="+i+" mas cercanos: "+new DecimalFormat("#").format(performance));
+			System.out.println("Resultado con K="+i+" mas cercanos: "+performanceFormated);
 		}
+
+		porcent.append(performanceFormated+"\n");
 //		result.appendln("Performance: "+new DecimalFormat("#").format(performance));
 	}
 

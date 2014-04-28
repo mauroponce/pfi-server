@@ -251,18 +251,18 @@ public abstract class FaceRecognizer implements IFaceRecognizer {
 		
 //		cvSaveImage(cropedStudentFolder, faceImage);
 
-		//Read the file to a BufferedImage  
-		BufferedImage image = faceImage.getBufferedImage(); 
-		
-		//Create a file for the output  
-		File output = new File(cropedStudentFolder.replace(".jpg", ".bmp"));  
-		  
-		//Write the image to the destination as a BMP  
-		try {
-			ImageIO.write(image, "bmp", output);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+//		//Read the file to a BufferedImage  
+//		BufferedImage image = faceImage.getBufferedImage(); 
+//		
+//		//Create a file for the output  
+//		File output = new File(cropedStudentFolder.replace(".jpg", ".bmp"));  
+//		  
+//		//Write the image to the destination as a BMP  
+//		try {
+//			ImageIO.write(image, "bmp", output);
+//		} catch (IOException e) {
+//			throw new RuntimeException(e);
+//		}
 		
 		return faceImage;
 	}
