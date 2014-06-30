@@ -26,7 +26,7 @@ public class FaceDetection {
 
 	// The cascade definition to be used for detection.
 //	private static final String CASCADE_FILE = "C:\\Users\\smoral\\Desktop\\tmp\\haarcascade_frontalface_alt.xml";
-	private static final String CASCADE_FILE = "C:\\Users\\smoral\\Desktop\\tmp\\";
+	private static final String CASCADE_FILE = "C:/Users/"+System.getProperty("user.name")+"/Documents/PFI/";
 
 	public static void detectMultipleFaces(String fileInputPath, String haarCascadeFileName, String fileOutputPath) throws Exception {
 		
