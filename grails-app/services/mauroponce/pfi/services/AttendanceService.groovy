@@ -32,7 +32,8 @@ class AttendanceService {
 	}
 	
 	String getTrainingData(final String username, final Date currentDate) {
-		def course = findCourse(username, currentDate);
+		CourseService courseService = new CourseService();
+		def course = courseService.findCourse(username, currentDate);
 		if(course == null){
 			throw new NullPointerException("Course not found");
 		}
@@ -49,49 +50,15 @@ class AttendanceService {
 		return recognitionService.getFacesData("course_"+course.getCourseNumber());
 	}
 	
-	Course findCourse(final String teacherUsername, final Date date){
-    	def foundCourse
-    	DateTime dateTime = new DateTime(date);
-    	int dayOfWeek = dateTime.dayOfWeek().get();
-    	System.out.println("Day of Week: " + dayOfWeek);
-		
-    	String q = "select c from Course c join c.teachers t where t.username = :username " +
-    			"and c.dayOfWeek = :dayOfWeek";
-			
-		//String q = "from Course as c where c.dayOfWeek = :dayOfWeek";
-    	
-//		def courses = Course.findAll(q, [dayOfWeek: dayOfWeek])
-		def courses = Course.executeQuery(q, [username: teacherUsername, dayOfWeek: dayOfWeek])     	
-    	LocalTime currentTime = new LocalTime(dateTime.getHourOfDay(), dateTime.getMinuteOfHour())    	
-    	for(Course c in courses){
-    		if(isInInterval(currentTime, c.getHourFrom(), c.getHourTo())){
-    			foundCourse = c;
-    		}
-    	}
-    	return foundCourse;
-    }
-	
 	def sendTrainingImage(final Integer studentLU, final String encodedImageBase64, final String fileExtension){
 		String fileName = new Date().getTime().toString() + "." + fileExtension;
 		String outputPath = AppConstants.TRAINING_IMAGES_ROOT_FOLDER + "/" + studentLU + "/" + fileName;
 			
 		FileUtils.decodeFileBase64(encodedImageBase64, outputPath);
+		
+		CourseService courseService = new CourseService();
+		courseService.processGenerateFacesdata(studentLU);		
 	}
-	
-    private boolean isInInterval(final LocalTime currentTime, String hourFrom, String hourTo){
-    	String [] timeFromArray = hourFrom.split(":");
-		Integer hourFromInt = Integer.parseInt(timeFromArray[0]);
-		Integer minuteFromInt = Integer.parseInt(timeFromArray[1]);    		
-		String [] timeToArray = hourTo.split(":");
-		Integer hourToInt = Integer.parseInt(timeToArray[0]);
-		Integer minuteToInt = Integer.parseInt(timeToArray[1]);
-		
-		LocalTime timeFrom = new LocalTime(hourFromInt, minuteFromInt);		
-		LocalTime timeTo = new LocalTime(hourToInt, minuteToInt);		
-		Interval interval = new Interval(timeFrom.toDateTimeToday(), timeTo.toDateTimeToday());
-		
-    	return interval.contains(currentTime.toDateTimeToday());
-    }
 	    
     private void validateFields(final Integer studentLU, final Integer courseNumber,
 			final Boolean attended, final Date date){

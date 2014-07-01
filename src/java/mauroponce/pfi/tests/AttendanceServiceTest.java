@@ -3,6 +3,7 @@ import java.util.Date;
 
 import mauroponce.pfi.domain.Course;
 import mauroponce.pfi.services.AttendanceService;
+import mauroponce.pfi.services.CourseService;
 
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -24,14 +25,6 @@ public class AttendanceServiceTest {
 	public void testSaveTodayAttendanceWrong(){
         attendanceService.saveAttendance(null, new Integer(1),
         		Boolean.valueOf(true), null);
-	}
-	
-	@Test
-	public void testFindCurrentCourse(){
-		// yyyy, mm, dd, hh, MM, s y s
-		Date date = new DateTime(2012, 10, 15, 9, 30, 0, 0).toDate();
-		Course course = attendanceService.findCourse(TEACHER_MIRALLES_USERNAME, date);
-		Assert.assertNotNull(course);
 	}
 	
 	@Test

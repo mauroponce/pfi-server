@@ -24,11 +24,13 @@ public class Course implements Serializable {
 	private Integer dayOfWeek; // Monday = 1... Sunday = 7
 	private String hourFrom;// 7:45, 18:30, etc
 	private String hourTo;
-	
+	private Boolean generateFacesdata;
+		
 	@Id
 	public Integer getCourseNumber() {
 		return courseNumber;
 	}
+	
 	public void setCourseNumber(Integer courseNumber) {
 		this.courseNumber = courseNumber;
 	}
@@ -82,5 +84,11 @@ public class Course implements Serializable {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public Boolean getGenerateFacesdata() {
+		return generateFacesdata;
+	}
+	public void setGenerateFacesdata(Boolean generateFacesdata) {
+		this.generateFacesdata = generateFacesdata;
 	}
 }

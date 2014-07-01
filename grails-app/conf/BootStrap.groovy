@@ -19,6 +19,7 @@ class BootStrap {
 			course.setName("Fisica General")
 			course.setHourFrom("07:45")
 			course.setHourTo("11:45")
+			course.setGenerateFacesdata(Boolean.FALSE);
 			
 //			course.getStudents().add(mauro);
 //			course.getStudents().add(cho);
