@@ -40,7 +40,7 @@ public class ConfusionMatrixTest {
 	private static void processFolders(Integer t,
 			String recognitionCourseFolder, Integer k) {
 		recognitionService = new FaceRecognizer();
-		recognitionService.learn("course_"+t);
+		recognitionService.learn(AppConstants.TRAINING_IMAGES_ROOT_FOLDER+File.separator+"course_"+t, null);
 		System.out.println("<table><tr><td colspan='"+(k+1)+"'>PRUEBA T = "+t+"</td></tr></table>");
 		for (int i = 1; i <= k; i++) {
 			createConfusionMatriz(recognitionCourseFolder, i);

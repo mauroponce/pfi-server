@@ -1,6 +1,7 @@
 package mauroponce.pfi.tests;
 
 import mauroponce.pfi.recognition.*;
+import mauroponce.pfi.utils.AppConstants;
 
 public class RecognitionTest {
 //	static String testImagePath = "C:/Users/Mauro/Documents/PFI/test/moralito.jpg";
@@ -11,7 +12,7 @@ public class RecognitionTest {
 		FaceRecognizer recognitionService = new FaceRecognizer();
 //		String [] imagesFolders = {"131445", "131900", "131455", "131431"};
 		String courseFolderName = "course_1";
-		recognitionService.learn(courseFolderName);
+		recognitionService.learn(AppConstants.TRAINING_IMAGES_ROOT_FOLDER, null);
 //		recognitionService.recognize(testImagePath, k);
 	}	
 }

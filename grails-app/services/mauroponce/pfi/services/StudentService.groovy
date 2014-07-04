@@ -7,7 +7,7 @@ import mauroponce.pfi.utils.FileUtils
 
 class StudentService {
 	public static void createStudentsFromImageFolder(Course course){
-		File courseFolder = new File(AppConstants.TRAINING_IMAGES_ROOT_FOLDER + "/course_" + course.courseNumber);		
+		File courseFolder = new File(AppConstants.APPLICATION_IMAGES_FOLDER + "/course_" + course.courseNumber);		
 		for (File studentFolder : courseFolder.listFiles()) {			
 			Student student = new Student()
 			student.setLU(studentFolder.getName().toInteger())
