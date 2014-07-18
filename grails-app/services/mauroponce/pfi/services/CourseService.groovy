@@ -1,8 +1,12 @@
 package mauroponce.pfi.services
 
 import mauroponce.pfi.domain.Course
+import mauroponce.pfi.recognition.FaceRecognizer
+import mauroponce.pfi.utils.AppConstants
 import mauroponce.pfi.utils.DateUtil
+import mauroponce.pfi.utils.FileUtils;
 
+import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime
 import org.joda.time.LocalTime
 
@@ -45,4 +49,28 @@ class CourseService {
 			}
 		}
     }
+	
+	String createTrainingData(final Integer courseNumber) {
+		Course course = Course.get(courseNumber);
+		if(course == null){
+			throw new NullPointerException("Course not found")
+		}
+		FaceRecognizer recognitionService = new FaceRecognizer()
+		System.out.println("Students: " + course.getStudents().size())
+		String facesData = recognitionService.createFacesData(AppConstants.TRAINING_IMAGES_ROOT_FOLDER, course.getStudents())
+		
+		course.encodedFacesData = Base64.encodeBase64String(facesData.getBytes());
+		course.creationDateFacesData= new Date();
+		course.generateFacesdata = Boolean.FALSE;
+		course.save();
+	}
+	
+	def sendTrainingImage(final Integer studentLU, final String encodedImageBase64, final String fileExtension){
+		String fileName = new Date().getTime().toString() + "." + fileExtension
+		String outputPath = AppConstants.TRAINING_IMAGES_ROOT_FOLDER + "/" + studentLU + "/" + fileName
+			
+		FileUtils.decodeFileBase64(encodedImageBase64, outputPath)
+		
+		this.processGenerateFacesdata(studentLU)		
+	}
 }

@@ -8,7 +8,8 @@ class StudentController {
 	
 	static allowedMethods = [
 		data: 'GET',
-		course_students: 'GET'
+		course_students: 'GET',
+		batch_data: 'GET'
 	]
 	
 	// http://localhost:8080/PFI/student/data/131445
@@ -23,22 +24,7 @@ class StudentController {
 	// returns all the students of the course
 	def course_students(){
 		Integer courseId = params.id.toInteger()
-		Course course;
-		Course.withTransaction{
-			course = Course.get(courseId) 	
-		}
-		def students = course.getStudents()
-		def students_data = []
-		
-		for(Student student : students){
-			def data = [
-				lu: student.getLU(),
-				firstName: student.getFirstName(),
-				lastName: student.getLastName(),
-				encodedImage: student.getEncodedImage()
-			]
-			students_data.add(data)		
-		}		
+				
 		render students_data as JSON
 	}
 	

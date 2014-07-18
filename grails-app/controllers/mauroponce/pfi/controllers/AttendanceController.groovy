@@ -1,33 +1,34 @@
 package mauroponce.pfi.controllers
 
-import java.util.Date;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter
-import org.joda.time.format.DateTimeFormat
-
 import grails.converters.JSON
-import grails.converters.XML
+import groovy.json.JsonBuilder
 import mauroponce.pfi.domain.*
+
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 
 class AttendanceController {
 	def attendanceService
+	def courseService
+	def studentService
 	
 	static allowedMethods = [
 		save: 'POST',
-		facesdata: 'GET',
-		send_training_data: 'POST'
+		log_in: 'GET'
 	]
 	
-	// http://localhost:8080/PFI/attendance/facesdata?usr=mmiralles&d=2012-10-15-09:30
-	def facesdata() {		
+	// http://localhost:8080/PFI/attendance/log_in?usr=mmiralles&d=2012-10-15-09:30
+	def log_in() {		
 		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH:mm");
 		// DateTime date1 = formatter.parseDateTime("2012-10-15 09:30");
 		String username = params.usr		
 		Date currentDate = formatter.parseDateTime(params.d).toDate();
-		String facesData = attendanceService.getTrainingData(username, currentDate) 
-		def result = [facesdata: facesData] 
-		render facesData
+		Course course = attendanceService.logIn(username, currentDate)
+		def result = [courseNumber: course.courseNumber,
+						dateCreationFacesData: course.creationDateFacesData.time,
+						students: studentService.getStudentsJSONByCourseNumber(course.courseNumber)]
+		render result as JSON
 	}
 	
 	// http://localhost:8080/PFI/attendance/save
@@ -38,12 +39,5 @@ class AttendanceController {
 		def result = [saved: returned != null]
 		render result as JSON
 		/*Agregar restricciones a Attendance para q no permita duplicados. Ahora guarda siempre*/
-	}
-	
-	// http://localhost:8080/PFI/attendance/send_training_data
-	// post: Integer studentLU, String encodedImageBase64, String fileExtension
-	def send_training_data(){
-		def jsonParams = request.JSON
-		attendanceService.sendTrainingImage(jsonParams.studentLU, jsonParams.encodedImageBase64, jsonParams.fileExtension)
 	}
 }

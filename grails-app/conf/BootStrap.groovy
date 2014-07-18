@@ -4,7 +4,7 @@ import mauroponce.pfi.domain.Teacher
 import mauroponce.pfi.services.StudentService
 
 class BootStrap {
-
+	def courseService
     def init = { servletContext ->
 		Student.withTransaction {
 				
@@ -35,6 +35,7 @@ class BootStrap {
 //				course.getStudents().add(student)				
 //			}
 			course.save()
+			courseService.createTrainingData(3);
 		}
     }
     def destroy = {

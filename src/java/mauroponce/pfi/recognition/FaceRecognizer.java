@@ -290,7 +290,7 @@ public class FaceRecognizer {
 		cvReleaseFileStorage(fileStorage);
 	}
 	
-	public String getFacesData(final String studentFolder, List<Student> students){
+	public String createFacesData(final String studentFolder, List<Student> students){
 		learn(studentFolder, students);
 		return FileUtils.fileToString(AppConstants.FACEDATA_PATH);
 	}

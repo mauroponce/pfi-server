@@ -26,12 +26,4 @@ public class AttendanceServiceTest {
         attendanceService.saveAttendance(null, new Integer(1),
         		Boolean.valueOf(true), null);
 	}
-	
-	@Test
-	public void testGetTrainingData(){
-		String trainingData = attendanceService.getTrainingData(TEACHER_MIRALLES_USERNAME,
-				new DateTime(2012, 10, 15, 9, 30).toDate());
-		
-		Assert.assertNotNull(trainingData);
-	}
 }

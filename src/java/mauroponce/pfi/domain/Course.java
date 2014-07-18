@@ -2,6 +2,7 @@ package mauroponce.pfi.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -9,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
@@ -25,6 +27,8 @@ public class Course implements Serializable {
 	private String hourFrom;// 7:45, 18:30, etc
 	private String hourTo;
 	private Boolean generateFacesdata;
+	private String encodedFacesData;
+	private Date creationDateFacesData;  
 		
 	@Id
 	public Integer getCourseNumber() {
@@ -90,5 +94,22 @@ public class Course implements Serializable {
 	}
 	public void setGenerateFacesdata(Boolean generateFacesdata) {
 		this.generateFacesdata = generateFacesdata;
+	}
+
+	@Lob
+	public String getEncodedFacesData() {
+		return encodedFacesData;
+	}
+
+	public void setEncodedFacesData(String encodedFacesData) {
+		this.encodedFacesData = encodedFacesData;
+	}
+
+	public Date getCreationDateFacesData() {
+		return creationDateFacesData;
+	}
+
+	public void setCreationDateFacesData(Date creationDateFacesData) {
+		this.creationDateFacesData = creationDateFacesData;
 	}
 }

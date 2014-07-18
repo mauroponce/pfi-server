@@ -1,6 +1,5 @@
 package mauroponce.pfi.tests;
 import java.util.Date;
-import java.util.List;
 
 import mauroponce.pfi.domain.Course;
 import mauroponce.pfi.services.CourseService;
@@ -27,6 +26,13 @@ public class CourseServiceTest {
 	public void testFindCoursesByStudentLu(){
 //		List<Course> courses = courseService.findCoursesByStudentLu(MAURO_PONCE_LU);
 //		Assert.assertNotNull(courses);
+	}
+	
+	@Test
+	public void testGetTrainingData(){
+		String trainingData = courseService.createTrainingData(3);
+		
+		Assert.assertNotNull(trainingData);
 	}
 	
 }

@@ -1,5 +1,6 @@
 package mauroponce.pfi.services
 
+import grails.converters.JSON
 import mauroponce.pfi.domain.Course
 import mauroponce.pfi.domain.Student
 import mauroponce.pfi.utils.AppConstants
@@ -33,6 +34,26 @@ class StudentService {
 			student.save()
 			course.getStudents().add(student)
 		}
+	}
+	
+	def getStudentsJSONByCourseNumber(Integer courseNumber){
+		Course course;
+		Course.withTransaction{
+			course = Course.get(courseNumber)
+		}
+		def students = course.getStudents()
+		def students_data = []
+		
+		for(Student student : students){
+			def data = [
+				lu: student.getLU(),
+				firstName: student.getFirstName(),
+				lastName: student.getLastName(),
+				encodedImage: student.getEncodedImage()
+			]
+			students_data.add(data)
+		}
+		return students_data;
 	}
 	
 }

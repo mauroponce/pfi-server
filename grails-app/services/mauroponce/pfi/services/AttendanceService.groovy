@@ -30,26 +30,14 @@ class AttendanceService {
 		def attendance = new Attendance(student, course, attended, d)
 		return attendance.save()
 	}
-	
-	String getTrainingData(final String username, final Date currentDate) {
+			
+	Course logIn (final String username, final Date currentDate) {
 		CourseService courseService = new CourseService()
 		def course = courseService.findCourse(username, currentDate)
 		if(course == null){
 			throw new NullPointerException("Course not found")
 		}
-		FaceRecognizer recognitionService = new FaceRecognizer()
-		System.out.println("Students: " + course.getStudents().size())
-		return recognitionService.getFacesData(AppConstants.TRAINING_IMAGES_ROOT_FOLDER, course.getStudents())
-	}
-	
-	def sendTrainingImage(final Integer studentLU, final String encodedImageBase64, final String fileExtension){
-		String fileName = new Date().getTime().toString() + "." + fileExtension
-		String outputPath = AppConstants.TRAINING_IMAGES_ROOT_FOLDER + "/" + studentLU + "/" + fileName
-			
-		FileUtils.decodeFileBase64(encodedImageBase64, outputPath)
-		
-		CourseService courseService = new CourseService()
-		courseService.processGenerateFacesdata(studentLU)		
+		return course;
 	}
 	    
     private void validateFields(final Integer studentLU, final Integer courseNumber,
