@@ -46,7 +46,7 @@ class StudentService {
 		
 		for(Student student : students){
 			def data = [
-				lu: student.getLU(),
+				LU: student.getLU(),
 				firstName: student.getFirstName(),
 				lastName: student.getLastName(),
 				encodedImage: student.getEncodedImage()

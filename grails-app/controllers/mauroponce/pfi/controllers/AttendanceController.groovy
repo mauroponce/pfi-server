@@ -22,11 +22,12 @@ class AttendanceController {
 	def log_in() {		
 		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd-HH:mm");
 		// DateTime date1 = formatter.parseDateTime("2012-10-15 09:30");
-		String username = params.usr		
+		String username = params.usr
+		System.out.println("loged: ${username}")
 		Date currentDate = formatter.parseDateTime(params.d).toDate();
 		Course course = attendanceService.logIn(username, currentDate)
 		def result = [courseNumber: course.courseNumber,
-						dateCreationFacesData: course.creationDateFacesData.time,
+						creationDateFacesData: course.creationDateFacesData.time,
 						students: studentService.getStudentsJSONByCourseNumber(course.courseNumber)]
 		render result as JSON
 	}

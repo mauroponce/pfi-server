@@ -22,9 +22,17 @@ class CourseController {
 			course = Course.get(courseNumber)
 		}
 		def result = [courseNumber: course.courseNumber,
-						creationDateFecasData: course.creationDateFacesData.time,
+						creationDateFacesData: course.creationDateFacesData.time,
 						encodedFacesData: course.encodedFacesData]
+		
+		System.out.println("training_data: ${result.toString().substring(0,25)}");
 		render result as JSON
+	}
+	
+	// http://localhost:8080/PFI/course/create_training_data/3
+	def create_training_data() {
+		Integer courseNumber = params.id.toInteger()
+		render courseService.createTrainingData(courseNumber)
 	}
 	
 	// http://localhost:8080/PFI/course/send_training_data

@@ -14,11 +14,14 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "COURSES")
 public class Course implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer courseNumber;
 	private String name;
 	private List<Teacher> teachers = new ArrayList<Teacher>();
