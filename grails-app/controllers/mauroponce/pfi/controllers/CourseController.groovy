@@ -11,7 +11,8 @@ class CourseController {
 	
 	static allowedMethods = [
 		send_training_data: 'POST',
-		get_training_data: 'GET'
+		get_training_data: 'GET',
+		create_training_data: 'GET'
 	]
 	
 	// http://localhost:8080/PFI/course/get_training_data/3

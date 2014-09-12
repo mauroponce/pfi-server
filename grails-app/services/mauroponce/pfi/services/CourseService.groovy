@@ -27,7 +27,12 @@ class CourseService {
 		
     	String q = "select c from Course c join c.teachers t where t.username = :username " +
     			"and c.dayOfWeek = :dayOfWeek";
-			
+				
+//		def query = Course.where {
+//			teachers.username == username && dayOfWeek == dayOfWeek
+//		}
+//		Course.find(username: teacherUsername, dayOfWeek: dayOfWeek)
+				
 		//String q = "from Course as c where c.dayOfWeek = :dayOfWeek";
     	
 //		def courses = Course.findAll(q, [dayOfWeek: dayOfWeek])

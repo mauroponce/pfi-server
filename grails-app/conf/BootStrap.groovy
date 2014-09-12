@@ -13,29 +13,34 @@ class BootStrap {
 			miralles.setUsername("mmiralles")
 			miralles.save()
 			
-			Course course = new Course();
-			course.setCourseNumber(3)
-			course.setDayOfWeek(1) //monday
-			course.setName("Fisica General")
-			course.setHourFrom("07:45")
-			course.setHourTo("11:45")
-			course.setGenerateFacesdata(Boolean.FALSE);
+			Teacher sadopazo = new Teacher()
+			sadopazo.setUsername("sadopazo")
+			sadopazo.save()
 			
-//			course.getStudents().add(mauro);
-//			course.getStudents().add(cho);
-//			course.getStudents().add(pau);
-//			course.getStudents().add(goma);
-			
-			course.getTeachers().add(miralles);
+			Course course1 = new Course();
+			course1.setCourseNumber(3)
+			course1.setDayOfWeek(1) //monday
+			course1.setName("Fisica General")
+			course1.setHourFrom("07:45")
+			course1.setHourTo("11:45")
+			course1.setGenerateFacesdata(Boolean.FALSE);			
+			course1.getTeachers().add(miralles);
+						
+			Course course2 = new Course();
+			course2.setCourseNumber(1)
+			course2.setDayOfWeek(1) //monday
+			course2.setName("Estadistica Aplicada")
+			course2.setHourFrom("07:45")
+			course2.setHourTo("11:45")
+			course2.setGenerateFacesdata(Boolean.FALSE);			
+			course2.getTeachers().add(sadopazo);
 			//SE DEBERIA GUARDAR LA CARPETA FACES QUE ESTA DENTRO DEL REPO EN EL PATH QUE SE INDICA EN LA VARIABLE AppConstants.TRAINING_IMAGES_ROOT_FOLDER
-			StudentService.createStudentsFromImageFolder(course)
-//			def students = CourseUtil.getStudentsFromImageFolder(course);
-//			students.each { student ->
-//				student.save()
-//				course.getStudents().add(student)				
-//			}
-			course.save()
-			courseService.createTrainingData(3);
+			StudentService.createStudentsFromImageFolder(course1, course2)
+			
+			course1.save()
+			courseService.createTrainingData(course1.courseNumber);			
+			course2.save()
+			courseService.createTrainingData(course2.courseNumber);
 		}
     }
     def destroy = {
