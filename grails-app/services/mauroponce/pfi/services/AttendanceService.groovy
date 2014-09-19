@@ -1,23 +1,10 @@
 package mauroponce.pfi.services
 
-import java.util.Date
-import java.util.List
-
-import javax.jws.WebMethod
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
-import javax.persistence.Query
-
 import mauroponce.pfi.domain.Attendance
 import mauroponce.pfi.domain.Course
 import mauroponce.pfi.domain.Student
-import mauroponce.pfi.recognition.FaceRecognizer
-import mauroponce.pfi.utils.AppConstants
-import mauroponce.pfi.utils.FileUtils
 
 import org.joda.time.DateTime
-import org.joda.time.Interval
-import org.joda.time.LocalTime
 
 class AttendanceService {
 
@@ -37,7 +24,7 @@ class AttendanceService {
 		if(course == null){
 			throw new NullPointerException("Course not found")
 		}
-		return course;
+		return course
 	}
 	    
     private void validateFields(final Integer studentLU, final Integer courseNumber,

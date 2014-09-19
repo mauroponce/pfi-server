@@ -2,7 +2,6 @@ package mauroponce.pfi.tests;
 
 import java.io.File;
 
-import mauroponce.pfi.services.AttendanceService;
 import mauroponce.pfi.utils.FileUtils;
 
 import org.junit.Assert;

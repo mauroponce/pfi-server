@@ -56,7 +56,7 @@ class CourseService {
     }
 	
 	String createTrainingData(final Integer courseNumber) {
-		Course course = Course.get(courseNumber);
+		Course course = Course.get(courseNumber)
 		if(course == null){
 			throw new NullPointerException("Course not found")
 		}
@@ -64,10 +64,10 @@ class CourseService {
 		System.out.println("Students: " + course.getStudents().size())
 		String facesData = recognitionService.createFacesData(AppConstants.TRAINING_IMAGES_ROOT_FOLDER, course.getStudents())
 		
-		course.encodedFacesData = Base64.encodeBase64String(facesData.getBytes());
-		course.creationDateFacesData= new Date();
-		course.generateFacesdata = Boolean.FALSE;
-		course.save();
+		course.encodedFacesData = Base64.encodeBase64String(facesData.getBytes())
+		course.creationDateFacesData= new Date()
+		course.generateFacesdata = Boolean.FALSE
+		course.save()
 	}
 	
 	def sendTrainingImage(final Integer studentLU, final String encodedImageBase64, final String fileExtension){
