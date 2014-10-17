@@ -7,7 +7,7 @@ import mauroponce.pfi.utils.AppConstants
 import mauroponce.pfi.utils.FileUtils
 
 class StudentService {
-	public static void createStudentsFromImageFolder(Course course1, Course course2){
+	public static void createStudentsFromImageFolder(Course course1, Course course2, Course course4){
 		File courseFolder = new File(AppConstants.APPLICATION_IMAGES_FOLDER + "/course_" + course1.courseNumber);
 		int i = 0		
 		for (File studentFolder : courseFolder.listFiles()) {			
@@ -36,6 +36,10 @@ class StudentService {
 			course1.getStudents().add(student)
 			if (i % 2 == 0){
 				course2.getStudents().add(student)				
+			}
+			if ((student.LU in 130001..130010)
+					|| student.LU in [130023, 130025, 130036, 130980, 131385, 131431, 131900, 131903] ){
+				course4.students.add(student)
 			}
 		}
 	}
