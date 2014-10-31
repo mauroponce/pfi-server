@@ -6,10 +6,10 @@
 <hibernate-configuration>
 
 	<session-factory>
-		<mapping class="mauroponce.pfi.domain.Attendance" />
-        <mapping class="mauroponce.pfi.domain.Course" />
-        <mapping class="mauroponce.pfi.domain.Student" />
-        <mapping class="mauroponce.pfi.domain.Teacher" />
+		<mapping class="poncemoral.pfi.domain.Attendance" />
+        <mapping class="poncemoral.pfi.domain.Course" />
+        <mapping class="poncemoral.pfi.domain.Student" />
+        <mapping class="poncemoral.pfi.domain.Teacher" />
 	</session-factory>
 
 </hibernate-configuration>

@@ -1,7 +1,7 @@
-import mauroponce.pfi.domain.Course
-import mauroponce.pfi.domain.Student
-import mauroponce.pfi.domain.Teacher
-import mauroponce.pfi.services.StudentService
+import poncemoral.pfi.domain.Course
+import poncemoral.pfi.domain.Student
+import poncemoral.pfi.domain.Teacher
+import poncemoral.pfi.services.StudentService
 
 class BootStrap {
 	def courseService
@@ -12,6 +12,10 @@ class BootStrap {
 			Teacher smoral = new Teacher()
 			smoral.setUsername("smoral")
 			smoral.save()
+			
+			Teacher mponce = new Teacher()
+			mponce.setUsername("mponce")
+			mponce.save()
 			
 			Teacher miralles = new Teacher()
 			miralles.setUsername("mmiralles")
@@ -48,15 +52,26 @@ class BootStrap {
 			course4.setGenerateFacesdata(Boolean.FALSE);
 			course4.getTeachers().add(smoral);
 			
+			Course course5 = new Course();
+			course5.setCourseNumber(5)
+			course5.setDayOfWeek(1) //monday
+			course5.setName("Programacion I")
+			course5.setHourFrom("07:55")
+			course5.setHourTo("11:55")
+			course5.setGenerateFacesdata(Boolean.FALSE);
+			course5.getTeachers().add(mponce);
+			
 			//SE DEBERIA GUARDAR LA CARPETA FACES QUE ESTA DENTRO DEL REPO EN EL PATH QUE SE INDICA EN LA VARIABLE AppConstants.TRAINING_IMAGES_ROOT_FOLDER
-			StudentService.createStudentsFromImageFolder(course1, course2, course4)
+			StudentService.createStudentsFromImageFolder(course1, course2, course4, course5)
 			
 			course1.save()
 			courseService.createTrainingData(course1.courseNumber);			
 			course2.save()
 			courseService.createTrainingData(course2.courseNumber);			
 			course4.save()
-			courseService.createTrainingData(course4.courseNumber);
+			courseService.createTrainingData(course4.courseNumber);			
+			course5.save()
+			courseService.createTrainingData(course5.courseNumber);
 		}
     }
     def destroy = {
