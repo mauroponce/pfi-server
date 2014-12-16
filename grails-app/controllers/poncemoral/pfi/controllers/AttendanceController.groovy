@@ -38,6 +38,13 @@ class AttendanceController {
 		Date date = new DateTime(2012, 10, 15, 9, 30, 0, 0).toDate(); //monday 9:30 (fisica general)
 		def returned = attendanceService.saveAttendance(jsonParams.studentLU, jsonParams.courseNumber, true, date) // null for current date
 		def result = [saved: returned != null]
+		if (result){
+			Course.withTransaction{
+				Student student = Student.get(jsonParams.studentLU)
+				Course course = Course.get(jsonParams.courseNumber)
+				System.out.println("Saved attendance to student: "+student.lastName+", "+student.firstName+" for course: "+course.name)		
+			}
+		}
 		render result as JSON
 		/*Agregar restricciones a Attendance para q no permita duplicados. Ahora guarda siempre*/
 	}

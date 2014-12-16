@@ -1,6 +1,7 @@
 package poncemoral.pfi.services
 
 import poncemoral.pfi.domain.Course
+import poncemoral.pfi.domain.Student
 import poncemoral.pfi.recognition.FaceRecognizer
 import poncemoral.pfi.utils.AppConstants
 import poncemoral.pfi.utils.DateUtil
@@ -43,6 +44,7 @@ class CourseService {
     			foundCourse = c;
     		}
     	}
+		System.out.println("Course: "+foundCourse.name);
     	return foundCourse;
     }
 	
@@ -68,6 +70,7 @@ class CourseService {
 		course.creationDateFacesData= new Date()
 		course.generateFacesdata = Boolean.FALSE
 		course.save()
+		System.out.println("Generated facesdata for course: "+course.name);
 	}
 	
 	def sendTrainingImage(final Integer studentLU, final String encodedImageBase64, final String fileExtension){
@@ -76,6 +79,12 @@ class CourseService {
 			
 		FileUtils.decodeFileBase64(encodedImageBase64, outputPath)
 		
-		this.processGenerateFacesdata(studentLU)		
+		this.processGenerateFacesdata(studentLU)
+		
+		Student student
+		Course.withTransaction{
+			student = Student.get(studentLU)
+			System.out.println("Added training image of student: "+student.lastName+", "+student.firstName)	
+		}
 	}
 }
